@@ -15,11 +15,13 @@ services:
   php:
     depends_on:
       - db
-    image: php:8.0-apache
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
-      - ./web:/var/www/html/
+      - ./:/var/www/html/
     networks:
       - blogphp
 

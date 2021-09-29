@@ -1,0 +1,16 @@
+{
+    "name": "blog/php",
+    "authors": [
+        {
+            "name": "geoffrey521",
+            "email": "calvino.geoffrey@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.0",
+        "twbs/bootstrap": "^5.1"
+    },
+    "require-dev": {
+        "phpro/grumphp": "^1.4"
+    }
+}
