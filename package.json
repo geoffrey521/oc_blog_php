@@ -1,0 +1,10 @@
+{
+  "name": "oc_blog_php",
+  "version": "1.0.0",
+  "scripts": {
+    "compile:sass" : "node-sass app/public/assets/scss/screen.scss app/public/assets/css/custom.css -w"
+  },
+  "devDependencies": {
+    "node-sass": "^6.0.1"
+  }
+}

@@ -13,3 +13,6 @@ vendor/
 
 # ignore grumphp file
 *grumphp.yml
+
+# ignore config file
+app/bootstrap.php

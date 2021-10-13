@@ -6,6 +6,10 @@
             "email": "calvino.geoffrey@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {"App\\": "app/src/"},
+        "files": ["app/bootstrap.php"]
+    },
     "require": {
         "twig/twig": "^3.0",
         "twbs/bootstrap": "^5.1"
