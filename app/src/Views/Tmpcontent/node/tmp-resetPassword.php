@@ -12,7 +12,10 @@ if (isset($_GET['id']) && isset($_GET['token'])) {
             $validator->isConfirmed('password');
             if ($validator->isValid()) {
                 $password = $auth->hashPassword($_POST['password']);
-                $db->query('UPDATE user SET password = ?, reset_token = NULL, reset_at = NULL WHERE id = ?', [$password, $_GET['id']]);
+                $db->query(
+                    'UPDATE user SET password = ?, reset_token = NULL, reset_at = NULL WHERE id = ?',
+                    [$password, $_GET['id']]
+                );
                 $auth->connect($user);
                 \App\Model\Session::getInstance()->setFlash('success', 'Votre mot de passe a été réinitialisée');
                 $controller->redirectTo('account');

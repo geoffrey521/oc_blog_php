@@ -6,7 +6,8 @@ use App\Core\Controller;
 use App\Core\Icontroller;
 use App\Model\Session;
 
-class HomeController extends Controller implements Icontroller {
+class HomeController extends Controller implements Icontroller
+{
 
     public function index()
     {
@@ -15,7 +16,4 @@ class HomeController extends Controller implements Icontroller {
             'session' => $_SESSION
         ]);
     }
-
-
-
 }

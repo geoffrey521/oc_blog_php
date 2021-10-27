@@ -6,7 +6,6 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
-
 class Controller
 {
 

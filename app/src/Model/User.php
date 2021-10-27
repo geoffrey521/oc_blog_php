@@ -2,7 +2,8 @@
 
 namespace App\Model;
 
-class User {
+class User
+{
 
     private array $options = [
         'restriction_msg' => "Vous devez être connecté pour accéder à cette page"
@@ -21,7 +22,8 @@ class User {
      * @param $password
      * @return string
      */
-    public function hashPassword($password) {
+    public function hashPassword($password)
+    {
         return password_hash($password, PASSWORD_BCRYPT);
     }
 
@@ -35,14 +37,16 @@ class User {
      * @param $email
      * @throws \Exception
      */
-    public function register($db, $firstname, $lastname, $username, $password, $email) {
+    public function register($db, $firstname, $lastname, $username, $password, $email)
+    {
         $password = $this->hashPassword($password);
         $bytes = random_bytes(30);
         $token = (bin2hex($bytes));
         $db->query(
             'INSERT INTO user(
                     firstname, lastname, username, email, password, is_active, confirm_token)
-                    VALUES(:firstname, :lastname, :username, :email, :password, :is_active, :confirm_token)', [
+                    VALUES(:firstname, :lastname, :username, :email, :password, :is_active, :confirm_token)',
+            [
             'firstname' => $firstname,
             'lastname' => $lastname,
             'username' => $username,
@@ -50,9 +54,15 @@ class User {
             'password' => $password,
             'is_active' => true,
             'confirm_token' => $token
-        ]);
+            ]
+        );
         $user_id = $db->lastInsertId();
-        mail($email,'Confirmation de votre compte', "Merci de cliquer sur le lien ci-dessous pour valider votre compte\n\nhttp://localhost/index.php?p=confirm&id=$user_id&token=$token");
+        mail(
+            $email,
+            'Confirmation de votre compte',
+            "Merci de cliquer sur le lien ci-dessous pour valider votre compte\n\n
+            http://localhost/index.php?p=confirm&id=$user_id&token=$token"
+        );
     }
 
     /**
@@ -62,9 +72,10 @@ class User {
      * @param $session
      * @return bool
      */
-    public function confirm($db, $user_id, $token) {
+    public function confirm($db, $user_id, $token)
+    {
         $user = $db->query('SELECT * FROM user WHERE id = ?', [$user_id])->fetch();
-        if($user && $user->confirm_token == $token) {
+        if ($user && $user->confirm_token == $token) {
             $db->query('UPDATE user SET confirm_token = NULL, confirmed_at = NOW() WHERE id = ?', [$user_id]);
             $this->session->write('auth', $user);
             return true;
@@ -76,8 +87,9 @@ class User {
     /**
      * restrict page for connected user only
      */
-    public function restrict() {
-        if(!$this->session->read('auth')) {
+    public function restrict()
+    {
+        if (!$this->session->read('auth')) {
             $this->session->setFlash('danger', $this->options['restriction_msg']);
             return true;
 //            header('Location: index.php?p=login');
@@ -86,18 +98,21 @@ class User {
         return false;
     }
 
-    public function getUser() {
+    public function getUser()
+    {
         if (!$this->session->read('auth')) {
             return false;
         }
         return $this->session->read('auth');
     }
 
-    public function connect($user) {
+    public function connect($user)
+    {
         $this->session->write('auth', $user);
     }
 
-    public function connectFromCookie($db) {
+    public function connectFromCookie($db)
+    {
         if (isset($_COOKIE['remember']) && !$this->getUser()) {
             $remember_token = $_COOKIE['remember'];
             $parts = explode('==', $remember_token);
@@ -107,7 +122,7 @@ class User {
                 $expected = $user_id . '==' . $user->remember_token . sha1($user_id . 'memberwookies');
                 if ($expected == $remember_token) {
                     $this->connect($user);
-                    setcookie('remember', $remember_token, time()+60*60*24*7);
+                    setcookie('remember', $remember_token, time() + 60 * 60 * 24 * 7);
                 }
             } else {
                 setcookie('remember', null, -1);
@@ -115,14 +130,17 @@ class User {
         }
     }
 
-    public function login($db, $username, $password, $remember = false) {
-        if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
+    public function login($db, $username, $password, $remember = false)
+    {
+        if (!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
+            $user = $db->query(
+                'SELECT * FROM user WHERE (username = :username OR email = :username) AND confirmed_at IS NOT NULL',
+                ['username' => $username]
+            )->fetch();
 
-            $user = $db->query('SELECT * FROM user WHERE (username = :username OR email = :username) AND confirmed_at IS NOT NULL', ['username' => $username])->fetch();
-
-            if(password_verify($password, $user->password)) {
+            if (password_verify($password, $user->password)) {
                 $this->connect($user);
-                if($remember) {
+                if ($remember) {
                     $this->remember($db, $user->id);
                 }
                 return $user;
@@ -132,38 +150,60 @@ class User {
         }
     }
 
-    public function remember($db, $user_id) {
+    public function remember($db, $user_id)
+    {
         $bytes = random_bytes(125);
         $remember_token = (bin2hex($bytes));
         $db->query('UPDATE user SET remember_token = ?', [$remember_token]);
-        setcookie('remember', $user_id . '==' . $remember_token . sha1($user_id . 'memberwookies'), time()+60*60*24*7);
+        setcookie(
+            'remember',
+            $user_id . '==' . $remember_token . sha1($user_id . 'memberwookies'),
+            time() + 60 * 60 * 24 * 7
+        );
     }
 
-    public function logout() {
-        setcookie('remember', NULL, -1);
+    public function logout()
+    {
+        setcookie('remember', null, -1);
         $this->session->delete('auth');
     }
 
-
-    public function resetPassword($db, $email) {
-        $user = $db->query('SELECT * FROM user WHERE (email = ?) AND confirmed_at IS NOT NULL', [$_POST['email']])->fetch();
-        if($user) {
+    public function resetPassword($db, $email)
+    {
+        $user = $db->query(
+            'SELECT * FROM user WHERE (email = ?) AND confirmed_at IS NOT NULL',
+            [$_POST['email']]
+        )->fetch();
+        if ($user) {
             $bytes = random_bytes(30);
             $reset_token = (bin2hex($bytes));
             $db->query('UPDATE user SET reset_token = ?, reset_at = NOW() WHERE id = ?', [$reset_token, $user->id]);
-            mail($email,'Blog php: Réinitialisation de votre mot de passe', "Cliquer sur le lien ci-dessous pour Réinitialiser votre mot de passe\n\nhttp://localhost/index.php?p=reset&id={$user->id}&token=$reset_token");
+            mail(
+                $email,
+                'Blog php: Réinitialisation de votre mot de passe',
+                "Cliquer sur le lien ci-dessous pour Réinitialiser votre mot de passe\n\n
+                http://localhost/index.php?p=reset&id={$user->id}&token=$reset_token"
+            );
             return $user;
         }
         return false;
-
     }
 
-    public function checkResetToken($db, $user_id, $token) {
-        return $db->query('SELECT * FROM user WHERE id = ? AND reset_token IS NOT NULL AND reset_token = ? AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)', [$user_id, $token])->fetch();
-
+    public function checkResetToken($db, $user_id, $token)
+    {
+        return $db->query(
+            'SELECT * FROM user WHERE id = ? 
+                     AND reset_token IS NOT NULL 
+                     AND reset_token = ? 
+                     AND reset_at > DATE_SUB(NOW(), 
+                         INTERVAL 30 
+                         )',
+            [$user_id, $token]
+        )->fetch();
     }
 
-    static function getAuth() {
+    public static function getAuth()
+    {
         return new User(Session::getInstance(), ['restriction_msg' => "Vous devez être connecté pour acceder"]);
     }
 }

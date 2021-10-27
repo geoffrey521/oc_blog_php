@@ -5,14 +5,14 @@ $auth = \App\Controller\TmpControllerFactory::getAuth();
 $db = \App\Model\ConnectDB::getDatabase();
 $auth->connectFromCookie($db);
 
-if($auth->getUser()) {
+if ($auth->getUser()) {
     $controller->redirectTo('account');
 }
 
-if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
+if (!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
     $user = $auth->login($db, $_POST['username'], $_POST['password'], isset($_POST['remember']));
     $session = \App\Model\Session::getInstance();
-    if($user) {
+    if ($user) {
         $session->setFlash('success', 'Connexion réussie');
         $controller->redirectTo('account');
     } else {
@@ -31,11 +31,13 @@ if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
                 <div class="my-5">
                     <form id="register-form" method="POST">
                         <div class="form-floating">
-                            <input class="form-control" id="login-username" name="username" type="text" placeholder="Entrez votre nom d'utilisateur..." required/>
+                            <input class="form-control" id="login-username" name="username" type="text"
+                                   placeholder="Entrez votre nom d'utilisateur..." required/>
                             <label for="username">Pseudo ou Email</label>
                         </div>
                         <div class="form-floating">
-                            <input class="form-control" id="login-password" name="password" type="password" placeholder="Entrez votre mot de passe..." required />
+                            <input class="form-control" id="login-password" name="password" type="password"
+                                   placeholder="Entrez votre mot de passe..." required />
                             <label for="password">Mot de passe </label>
                             <a href="index.php?p=forget" class="text-muted">Mot de passe oublié ?</a>
                         </div>
@@ -44,7 +46,8 @@ if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
                             <label for="remember">Se souvenir de moi</label>
                         </div>
                         <br />
-                        <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Se connecter</button>
+                        <button class="btn btn-primary text-uppercase"
+                                id="submitButton" type="submit">Se connecter</button>
                     </form>
                 </div>
             </div>

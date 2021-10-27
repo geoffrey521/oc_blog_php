@@ -11,8 +11,12 @@
     <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 
     <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"
+          rel="stylesheet" type="text/css" />
+    <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,
+            600italic,700italic,800italic,400,300,600,700,800"
+          rel="stylesheet" type="text/css" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="assets/css/styles.css" rel="stylesheet" />
@@ -25,8 +29,12 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light NavbarCustom" id="mainNav">
         <div class="container NavbarCustom-container px-4 px-lg-5">
-            <a class="navbar-brand Navbar-logo" href="index.php?p=home"><img src="assets/img/logo2white.png" alt="logo"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand Navbar-logo" href="index.php?p=home">
+                <img src="assets/img/logo2white.png" alt="logo">
+            </a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
@@ -39,11 +47,9 @@
                 </ul>
                 <div class="py-4 py-lg-0 ms-auto">
                     <!-- partie modifiée -->
-                    <?php use App\Model\Session;
-
-                    if(isset($_SESSION['auth'])): ?>
+                    <?php if (isset($_SESSION['auth'])) : ?>
                         <a href="index.php?p=logout" class="btn btn-primary">Se déconnecter</a>
-                    <?php else: ?>
+                    <?php else : ?>
                         <a href="index.php?p=login" class="btn btn-primary">Login</a>
                         <a href="index.php?p=register" class="btn btn-primary">Créer un compte</a>
                     <?php endif; ?>
@@ -68,7 +74,7 @@
 
     <!---------------------- partie modifiée ---------------------->
     <?php
-    if(Session::getInstance()->hasFlashes()) : ?>
+    if (Session::getInstance()->hasFlashes()) : ?>
         <?php foreach (Session::getInstance()->getFlashes() as $type => $message) : ?>
             <div class="alert alert-<?= $type; ?>">
                 <?= $message ?>

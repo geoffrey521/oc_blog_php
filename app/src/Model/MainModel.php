@@ -4,7 +4,8 @@ namespace App\Model;
 
 use PDO;
 
-class MainModel {
+class MainModel
+{
 
     protected $pdo;
 
@@ -20,8 +21,9 @@ class MainModel {
      * @param bool|array $params
      * @return false|\PDOStatement
      */
-    public function query($query, $params = false) {
-        if($params) {
+    public function query($query, $params = false)
+    {
+        if ($params) {
             $req = $this->pdo->prepare($query);
             $req->execute($params);
         } else {
@@ -37,5 +39,4 @@ class MainModel {
     {
         return $this->pdo->lastInsertId();
     }
-
 }

@@ -1,17 +1,16 @@
 <?php
 
-if(!empty($_POST) && !empty($_POST['email'])) {
+if (!empty($_POST) && !empty($_POST['email'])) {
     $controller = new \App\Controller\TmpControllerFactory();
-    $session= \App\Model\Session::getInstance();
+    $session = \App\Model\Session::getInstance();
     $db = \App\Model\ConnectDB::getDatabase();
     $auth = \App\Controller\TmpControllerFactory::getAuth();
-    if($auth->resetPassword($db, $_POST['email'])){
+    if ($auth->resetPassword($db, $_POST['email'])) {
         $session->setFlash('success', 'Un mail pour réinitialiser votre mot de passe vous a été envoyé');
         $controller->redirectTo('login');
     } else {
         $session->setFlash('danger', 'Aucun compte n\'est associé à cet email');
     }
-
 }
 ?>
 
@@ -26,7 +25,8 @@ if(!empty($_POST) && !empty($_POST['email'])) {
                 <div class="my-5">
                     <form id="register-form" method="POST">
                         <div class="form-floating">
-                            <input class="form-control" id="login-username" name="email" type="email" placeholder="Email..." required/>
+                            <input class="form-control"
+                                   id="login-username" name="email" type="email" placeholder="Email..." required/>
                             <label for="email">Email</label>
                         </div>
                         <br />

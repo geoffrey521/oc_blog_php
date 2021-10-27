@@ -1,8 +1,7 @@
 <?php
 \App\Controller\TmpControllerFactory::getAuth()->restrict();
-if(!empty($_POST)) {
-
-    if($_POST['password'] != $_POST['password_confirm']) {
+if (!empty($_POST)) {
+    if ($_POST['password'] != $_POST['password_confirm']) {
         $_SESSION['flash']['danger'] = "Les mots de passes ne sont pas identiques";
     } elseif (empty($_POST['password'])) {
         $_SESSION['flash']['danger'] = "Le mot de passe ne peut pas être vide";
@@ -12,7 +11,6 @@ if(!empty($_POST)) {
         $pdo->prepare('UPDATE user SET password = ?')->execute([$password]);
         $_SESSION['flash']['success'] = "Le mot de passe à bien été modifié";
     }
-
 }
 require_once __DIR__ . '/tmp-header.php';
 ?>
@@ -23,11 +21,16 @@ require_once __DIR__ . '/tmp-header.php';
 
         <form method="post">
             <div class="form-floating">
-                <input type="password" name="password" class="form-control" placeholder="Changer de mot de passe" required />
+                <input
+                    type="password" name="password" class="form-control" placeholder="Changer de mot de passe" required
+                />
                 <label for="password">Changer de mot de passe</label>
             </div>
             <div class="form-floating">
-                <input type="password" name="password_confirm" class="form-control" placeholder="Confirmation du nouveau mot de passe" required />
+                <input
+                        type="password" name="password_confirm"
+                        class="form-control" placeholder="Confirmation du nouveau mot de passe" required
+                />
                 <label for="password_confirm">Confirmation du nouveau mot de passe</label>
             </div>
             <button class="btn btn-primary">Changer de mot de passe</button>

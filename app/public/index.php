@@ -3,7 +3,6 @@
 use App\Controller\TmpControllerFactory;
 use App\Controller\FrontController;
 
-
 require '../../vendor/autoload.php';
 
 $frontController = new TmpControllerFactory();
@@ -39,33 +38,27 @@ $frontController = new TmpControllerFactory();
 //    $c->index();
 //}
 
-if(isset($_GET['c']))
-{
-    if(!empty($_GET['c']))
-    {
+if (isset($_GET['c'])) {
+    if (!empty($_GET['c'])) {
         $class = strtolower($_GET['c']);
-        if (isset($_GET['a']))
-        {
+        if (isset($_GET['a'])) {
             $action = $_GET['a'];
         }
 
-        switch ($class)
-        {
+        switch ($class) {
             case 'home':
                 $c = new \App\Controller\HomeController();
                 $c->index();
-            break;
+                break;
             case 'user':
                 $c = new \App\Controller\UserController();
-                if(isset($action)) {
+                if (isset($action)) {
                     try {
                         $c->$action();
                     } catch (Exception $e) {
                         die($e->getMessage());
                     }
-
                 }
-
         }
     }
 } else {

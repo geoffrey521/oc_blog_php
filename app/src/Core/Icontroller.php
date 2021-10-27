@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
-Interface Icontroller {
+interface Icontroller
+{
     public function index();
 }
