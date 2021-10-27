@@ -1,0 +1,66 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Créer un compte
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h2>Inscription</h2>
+
+                        {% if errors is not empty %}
+                        <div class="alert alert-danger">
+                            <p>Erreur lors de votre enregistrement</p>
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="my-5">
+                            <form id="register-form" method="POST" class="Form">
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-username" name="username" type="text" placeholder="Entrez votre nom d'utilisateur..." />
+                                    <label for="username">Pseudo</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-lastname" name="lastname" type="text" placeholder="Entrez votre prénom..."  />
+                                    <label for="lastname">Nom</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-firstname" name="firstname" type="text" placeholder="Entrez votre nom..."  />
+                                    <label for="firstname">Prénom</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-email" name="email" type="text" placeholder="Entrez votre email..."  />
+                                    <label for="email">Email address</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-password" name="password" type="password" placeholder="Entrez votre mot de passe..."  />
+                                    <label for="password">Mot de passe</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="register-confirm-password" name="password_confirm" type="password" placeholder="Entrez votre mot de passe..."  />
+                                    <label for="password_confirm">Confirmez votre mot de passe</label>
+                                </div>
+                                <div class="form-floating Form-checkbox">
+                                    <input class="form-check" id="register-terms" type="checkbox" name="terms"  />
+                                    <label for="terms">En cochant cette case, je reconnais avoir pris connaissance de la charte RGPD et en accepte les termes</label>
+                                </div>
+                                <br />
+                                <!-- Submit Button-->
+                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">M'inscrire</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+.Form {
+  &-checkbox {
+    display: flex;
+    align-items: start;
+    input {
+      margin-top: 25px;
+      margin-right: 5px;
+    }
+    label {
+      position: relative;
+    }
+  }
+}

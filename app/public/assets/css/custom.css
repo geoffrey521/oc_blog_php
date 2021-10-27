@@ -1,4 +1,14 @@
-/*body {
-  background-color: green !important;
-}
-*/
+.mainTitle {
+  font-size: 5rem; }
+
+.NavbarCustom-container {
+  max-width: 1800px; }
+
+.Form-checkbox {
+  display: flex;
+  align-items: start; }
+  .Form-checkbox input {
+    margin-top: 25px;
+    margin-right: 5px; }
+  .Form-checkbox label {
+    position: relative; }

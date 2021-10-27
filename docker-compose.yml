@@ -38,6 +38,13 @@ services:
     networks:
       - blogphp
 
+  maildev:
+    image: maildev/maildev
+    ports:
+      - "1080:80"
+    networks:
+      - blogphp
+
 networks:
   blogphp:
 volumes:

@@ -1,0 +1,23 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Bonjour {{ username }}</h2>
+
+        <form method="post">
+            <div class="form-floating">
+                <input type="password" name="password" class="form-control" placeholder="Changer de mot de passe" required />
+                <label for="password">Changer de mot de passe</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" name="password_confirm" class="form-control" placeholder="Confirmation du nouveau mot de passe" required />
+                <label for="password_confirm">Confirmation du nouveau mot de passe</label>
+            </div>
+            <button class="btn btn-primary">Changer de mot de passe</button>
+        </form>
+    </div>
+{% endblock %}
