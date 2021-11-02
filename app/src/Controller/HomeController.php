@@ -11,9 +11,6 @@ class HomeController extends Controller implements Icontroller
 
     public function index()
     {
-        Session::getInstance();
-        echo $this->twig->render('/front/home.html.twig', [
-            'session' => $_SESSION
-        ]);
+        echo $this->twig->render('/front/home.html.twig');
     }
 }

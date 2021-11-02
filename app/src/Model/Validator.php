@@ -27,6 +27,13 @@ class Validator
         }
     }
 
+    public function isNotEmpty($field, $errorMsg)
+    {
+        if (empty($this->getField($field))) {
+            return $this->errors[$field] = $errorMsg;
+        }
+    }
+
     public function isUniq($field, $db, $table, $errorMsg)
     {
         $record = $db->query("SELECT id FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
@@ -38,7 +45,7 @@ class Validator
     public function isEmail($field, $errorMsg)
     {
         if (!filter_var($this->getField($field), FILTER_VALIDATE_EMAIL)) {
-            $this->errors[$field] = $errorMsg;
+            return $this->errors[$field] = $errorMsg;
         }
     }
 
@@ -56,6 +63,8 @@ class Validator
             $this->errors[$field] = $errorMsg;
         }
     }
+
+
 
     public function isValid()
     {

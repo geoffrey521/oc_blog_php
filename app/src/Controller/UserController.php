@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Core\Controller;
+use App\Model\Auth;
 use App\Model\ConnectDB;
 use App\Model\Session;
 use App\Model\User;
@@ -10,15 +11,38 @@ use App\Model\Validator;
 
 class UserController extends Controller
 {
-
     /**
      * Show admin dashboard if user is admin
      */
     public function index()
     {
-        $session = Session::getInstance();
-        //Need to be checked
-        User::getAuth();
+        $isLogged = $this->getAuth()->isLogged();
+        if(!$isLogged)
+        {
+            $this->session->setFlash('danger', 'restriction_msg');
+            $this->redirectTo('front');
+        } else {
+            $username = $_SESSION['auth']->username;
+            if (!empty($_POST)) {
+                $user = new User(Session::getInstance());
+                if ($_POST['password'] != $_POST['password_confirm']) {
+                    $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
+                } elseif (empty($_POST['password'])) {
+                    $this->session->setFlash('danger', 'Le mot de passe ne peut pas être vide');
+                } else {
+                    $user_id = $_SESSION['auth']->id;
+                    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                    $db = ConnectDB::getDatabase();
+                    $user->updatePassword($db, $password, $user_id);
+                    $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
+                }
+            }
+
+            echo $this->twig->render('/user/account.html.twig', [
+                'session' => $this->session,
+                'username' => $username,
+            ]);
+        }
     }
 
     public function register()
@@ -63,7 +87,7 @@ class UserController extends Controller
                      $_POST['password'],
                      $_POST['email']
                  );
-                Session::getInstance()->setFlash(
+                $this->session->setFlash(
                     'success',
                     'Un email de confirmation vous a été envoyé pour valider votre compte.'
                 );
@@ -85,20 +109,18 @@ class UserController extends Controller
      */
     public function login()
     {
-        $auth = TmpControllerFactory::getAuth();
-        $db = \App\Model\ConnectDB::getDatabase();
-
+        $auth = $this->getAuth();
+        $db = ConnectDB::getDatabase();
         if ($auth->getUser()) {
-            $this->redirectTo('user', 'account');
+            $this->redirectTo('user');
         }
         if (!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])) {
             $user = $auth->login($db, $_POST['username'], $_POST['password'], isset($_POST['remember']));
-            $session = Session::getInstance();
             if ($user) {
-                $session->setFlash('success', 'Connexion réussie');
-                $this->redirectTo('user', 'account');
+                $this->session->setFlash('success', 'Connexion réussie');
+                $this->redirectTo('user');
             } else {
-                $session->setFlash('danger', 'identifiant ou mot de passe incorrecte');
+                $this->session->setFlash('danger', 'identifiant ou mot de passe incorrecte');
             }
         }
         echo $this->twig->render('/front/login.html.twig');
@@ -106,38 +128,74 @@ class UserController extends Controller
 
     public function logout()
     {
-        // TODO
-    }
-
-    public function changePassword()
-    {
-        // TODO
-    }
-
-    public function resetPassword()
-    {
-        // TODO
+        $user = new User();
+        $user->logout();
+        $this->redirectTo('front');
     }
 
     public function account()
     {
-        Session::getInstance();
-        $username = $_SESSION['auth']->username;
+        die('yes problem');
+    }
 
-        echo $this->twig->render('/user/account.html.twig', [
-            'session' => $_SESSION,
-            'username' => $username
+    public function confirm() {
+        $db = ConnectDB::getDatabase();
+        if ($this->getAuth()->confirm($db, $_GET['id'], $_GET['token'])) {
+            $this->session->setFlash('success', 'Votre compte à bien été validé.');
+            $this->redirectTo('user');
+        } else {
+            $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
+            $this->redirectTo('user', 'login');
+        }
+    }
+
+    public function getAuth() {
+        return new User($this->session::getInstance(), ['restriction_msg' => "TMP Vous devez être connecté pour acceder"]);
+    }
+
+    public function forget()
+    {
+        if (!empty($_POST) && !empty($_POST['email'])) {
+            $db = ConnectDB::getDatabase();
+            if ($this->getAuth()->resetPassword($db, $_POST['email'])) {
+                $this->session->setFlash('success', 'Un mail pour réinitialiser votre mot de passe vous a été envoyé');
+                $this->redirectTo('user', 'login');
+            } else {
+                $this->session->setFlash('danger', 'Aucun compte n\'est associé à cet email');
+            }
+        }
+
+        echo $this->twig->render('/user/forget-password.html.twig', [
+            'username' => 'truc'
         ]);
     }
 
-    /**
-     * restrict page for connected user only
-     */
-//    public function restrict() {
-//        if(!$this->session->read('auth')) {
-//            $this->session->setFlash('danger', $this->options['restriction_msg']);
-//            header('Location: index.php?c=login');
-//            exit();
-//        }
-//    }
+    public function reset()
+    {
+        if (isset($_GET['id']) && isset($_GET['token'])) {
+            $db = ConnectDB::getDatabase();
+            $user = $this->getAuth();
+            $user_properties = $user->checkResetToken($db, $_GET['id'], $_GET['token']);
+            if ($user_properties) {
+                if (!empty($_POST)) {
+                    $validator = new Validator($_POST);
+                    $validator->isConfirmed('password');
+                    if ($validator->isValid()) {
+                        $password = $user->hashPassword($_POST['password']);
+                        $user->updatePassword($db, $password, $_GET['id']);
+                        $user->connect($user_properties);
+                        $this->session->setFlash('success', 'Votre mot de passe a été réinitialisée');
+                        $this->redirectTo('user');
+                    }
+                }
+                echo $this->twig->render('/user/reset-password.html.twig');
+            } else {
+                $this->session->setFlash('danger', 'Lien invalide');
+                $this->redirectTo('user', 'login');
+            }
+        } else {
+            $this->redirectTo('user', 'login');
+        }
+
+    }
 }
