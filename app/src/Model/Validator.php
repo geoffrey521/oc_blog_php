@@ -2,20 +2,24 @@
 
 namespace App\Model;
 
-class Validator
+class Validator extends MainModel
 {
 
     private $errors = [];
 
     public function __construct(private $data)
     {
+        parent::__construct();
         $this->data = $data;
     }
 
-    private function getField($field)
+    private function getField($field, $key = null)
     {
         if (!isset($this->data[$field])) {
             return null;
+        }
+        if (!empty($key)) {
+            return $this->data[$field][$key];
         }
         return $this->data[$field];
     }
@@ -34,9 +38,9 @@ class Validator
         }
     }
 
-    public function isUniq($field, $db, $table, $errorMsg)
+    public function isUniq($field, $table, $errorMsg)
     {
-        $record = $db->query("SELECT id FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
+        $record = $this->query("SELECT id FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
         if ($record) {
             $this->errors[$field] = $errorMsg;
         }
@@ -64,7 +68,46 @@ class Validator
         }
     }
 
+    public function isExist($field, $table, $errorMsg)
+    {
+        $record = $this->query("SELECT $field FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
+        if (!$record) {
+            $this->errors[$field] = $errorMsg;
+        }
+    }
 
+    public function isCorrectPassword($password)
+    {
+        // TODO
+    }
+
+    public function isImageValid($field, $errorMsg)
+    {
+        if ($this->isImageOverSize($field, $errorMsg)) {
+            return $this->errors[$field] = $this->isImageOverSize($field, $errorMsg);
+        }
+        if ($this->isNotAllowedExtension($field, $errorMsg)) {
+            return $this->isNotAllowedExtension($field, $errorMsg);
+        }
+    }
+
+    public function isImageOverSize($field, $errorMsg)
+    {
+        if ($this->getField($field, 'size') > MAX_IMAGE_POST_FILESIZE) {
+            return $errorMsg . "l'image ne doit pas faire plus de " . MAX_IMAGE_POST_FILESIZE / 1000000 . "Mo";
+        }
+    }
+
+    public function isNotAllowedExtension($field, $errorMsg)
+    {
+        $fileInfo = pathinfo($this->getField($field, 'name'));
+
+        $extension = $fileInfo['extension'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png'];
+        if (!in_array($extension, $allowedExtensions)) {
+            return $errorMsg . "Seul les formats " . implode(', ', $allowedExtensions) . ", sont acceptés.";
+        }
+    }
 
     public function isValid()
     {

@@ -1,0 +1,22 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <h2 class="section-heading">{{ post.title }}</h2>
+                    <span class="caption text-muted">Le {{ post.last_update|date("d / m / Y") }}</span>
+                    <div class="category"><a href="index.php?c=post&a=category">{{ post.category }}</a></div>
+                    <p>{{ post.lead }}</p>
+                    <a href="#!"><img class="img-fluid" src="assets/img/post-sample-image.jpg" alt="..." /></a>
+                    <p>{{ post.content }}</p>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Modifier un article
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Modifier l'article {{ post.id }}</h2>
+        <form method="post">
+            <div class="form-floating">
+                <input type="text" name="title" class="form-control" placeholder="Titre de l'article" value="{{ post.title }}" required />
+                <label for="title">Titre</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="lead" class="form-control" placeholder="Chapo" value="{{ post.lead }}" required />
+                <label for="lead">Chapo</label>
+            </div>
+            <div class="form-floating">
+                <textarea class="form-control" name="content" id="" cols="30" rows="10" placeholder="Contenu de l'article" required>{{ post.content }}</textarea>
+                <label for="content">Contenu</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="slug" class="form-control" placeholder="Slug" value="{{ post.slug }}" required />
+                <label for="slug">slug</label>
+            </div>
+            <div class="form-floating Form-select">
+                <select name="category" id="category-select" required>
+                    <option value="">--Choisir une catégorie--</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary">Ajouter</button>
+        </form>
+    </div>
+{% endblock %}

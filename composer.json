@@ -13,7 +13,9 @@
     "require": {
         "twig/twig": "^3.0",
         "twbs/bootstrap": "^5.1",
-      "ext-pdo": "*"
+      "ext-pdo": "*",
+        "symfony/var-dumper": "^5.3",
+        "filp/whoops": "2.14.4"
     },
     "require-dev": {
         "phpro/grumphp": "^1.4",

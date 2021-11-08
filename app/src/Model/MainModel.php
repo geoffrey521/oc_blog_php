@@ -9,11 +9,9 @@ class MainModel
 
     protected $pdo;
 
-    public function __construct($user, $password, $host, $dbname)
+    public function __construct()
     {
-        $this->pdo = new \PDO("mysql:dbname=$dbname;host=$host", $user, $password);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        $this->pdo = Database::getDatabase();
     }
 
     /**
@@ -21,15 +19,22 @@ class MainModel
      * @param bool|array $params
      * @return false|\PDOStatement
      */
-    public function query($query, $params = false)
+    public function query($request, $params = false)
     {
         if ($params) {
-            $req = $this->pdo->prepare($query);
+            $req = $this->pdo->prepare($request);
             $req->execute($params);
         } else {
-            $req = $this->pdo->query($query);
+            $req = $this->pdo->query($request);
         }
         return $req;
+    }
+
+    public function delete($request, $params = false)
+    {
+        $req = $this->pdo->prepare("DELETE FROM " . static::TABLE_NAME);
+        $result = $req->execute($params);
+        return $result;
     }
 
     /**

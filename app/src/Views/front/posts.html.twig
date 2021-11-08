@@ -1,11 +1,11 @@
 {% extends 'layout/layout.html.twig' %}
 
 {% block head %}
-    GC
+    Tous les articles
 {% endblock %}
 
 {% block content %}
-    <h1>Bienvenue sur mon site</h1>
+    <h1>Tous nos articles</h1>
     {% if posts is not empty %}
         {% for post in posts %}
             <article class="mb-4">
@@ -16,13 +16,11 @@
                                 <a href="index.php?c=post&a=single&id={{ post.id }}">
                                     <h2 class="post-title">{{ post.title }}</h2>
                                     <h3 class="post-subtitle">{{ post.excerpt }}</h3>
-                                    <img class="img-fluid" src="{{ post.image }}" alt="...">
                                 </a>
                                 <p class="post-meta">
-                                    Publié le {{ post.last_update|date("d / m / Y") }}
+                                    Posté le {{ post.last_update|date("d / m / Y") }}
                                 </p>
-                                {{ dump(generate_route('singlePost', { id:post.id })) }}
-                                <p><a href="{{ generate_route('singlePost', { id:post.id }) }}" class="see-more">En voir plus</a></p>
+                                <p><a href="index.php?c=post&a=single&id={{ post.id }}" class="see-more">En voir plus</a></p>
                             </div>
                         </div>
                     </div>
@@ -31,6 +29,6 @@
             <!-- Divider -->
             <hr class="my-4" />
         {% endfor %}
-        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="index.php?c=post">Tous les articles</a></div>
+        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Plus d'articles</a></div>
     {% endif %}
 {% endblock %}
