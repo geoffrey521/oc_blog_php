@@ -7,7 +7,7 @@ use App\Repository\CategoryRepository;
 
 class Post extends MainModel
 {
-    private const TABLE_NAME = "post";
+    protected const TABLE_NAME = "post";
 
     private $id;
     private $title;
@@ -16,11 +16,11 @@ class Post extends MainModel
     private $excerpt;
     private $content;
     private $author;
+    private $category;
     private $authorId;
     private $categoryId;
     private $slug;
     private $last_update;
-
 
     /**
      * @return mixed
@@ -95,7 +95,7 @@ class Post extends MainModel
 
     public function setAuthorId($authorId)
     {
-        $this->author_id = $authorId;
+        $this->authorId = $authorId;
         return $this;
     }
 
@@ -105,6 +105,20 @@ class Post extends MainModel
     public function getAutorId()
     {
         return $this->authorId;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAutor()
+    {
+        return $this->author;
     }
 
     public function setCategoryId($category_id)
@@ -121,11 +135,20 @@ class Post extends MainModel
         return $this->categoryId;
     }
 
-    // ERREUR NE RECUPERE PAS LE PDO lors de l'instance getDatabase
+    public function setCategory($category)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
     public function getCategory()
     {
-        return CategoryRepository::findById($this->categoryId);
+        return $this->category;
     }
+
 
     public function setSlug($slug)
     {
@@ -160,10 +183,11 @@ class Post extends MainModel
     {
         $this->query(
             'INSERT INTO post(
-                 title, lead, author_id, category_id, slug, content)
-                 VALUES(:title, :lead, :author_id, :category_id, :slug, :content)',
+                 title, image, lead, author_id, category_id, slug, content)
+                 VALUES(:title, :image, :lead, :author_id, :category_id, :slug, :content)',
             [
                 'title' => $this->title,
+                'image' => $this->image['name'],
                 'lead' => $this->lead,
                 'author_id' => $this->authorId,
                 'category_id' => $this->categoryId,
@@ -175,7 +199,20 @@ class Post extends MainModel
 
     public function edit()
     {
-        // TODO
+        $this->query(
+            'UPDATE post SET (
+                 title, image, lead, author_id, category_id, slug, content)
+                 VALUES(:title, :image, :lead, :author_id, :category_id, :slug, :content)',
+            [
+                'title' => $this->title,
+                'image' => $this->image['name'],
+                'lead' => $this->lead,
+                'author_id' => $this->authorId,
+                'category_id' => $this->categoryId,
+                'slug' => $this->slug,
+                'content' => $this->content
+            ]
+        );
     }
 
     public function delete($request, $params = false)

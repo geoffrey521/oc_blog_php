@@ -27,14 +27,17 @@ class PostController extends Controller implements Icontroller
     public function singlePost($id)
     {
         $post = null;
+        $category = null;
         if (isset($id)) {
             $post = PostRepository::findById($id);
+            $category = CategoryRepository::findById($post->category_id);
         }
         if (empty($post)) {
             $this->redirectTo('post');
         }
         echo $this->twig->render('/front/single-post.html.twig', [
             'post' => $post,
+            'category' => $category
         ]);
     }
 
@@ -94,47 +97,54 @@ class PostController extends Controller implements Icontroller
         }
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $post = PostRepository::findById($_GET['id']);
-        $deleted = $post->delete($post->getId());
+        $deleted = PostRepository::deleteById($id);
         if ($deleted == true) {
             $this->session->setFlash('success', "L'article à bien été supprimé");
-        } else {
-            $this->session->setFlash('danger', "L'article n'a pas pu être supprimé");
+            $this->redirectTo('user', 'admin');
         }
+        $this->session->setFlash('danger', "L'article n'a pas pu être supprimé");
         $this->redirectTo('user', 'admin');
     }
 
-    public function edit()
+    public function edit($id)
     {
+        $post = PostRepository::findById($id);
         if (!empty($_POST)) {
-            $post = new Post();
-            $user = new User(Session::getInstance());
-            $post->setTitle($_POST['title'])
-                ->setLead($_POST['lead'])
-                ->setAuthorId($user->getId())
-                ->setCategoryId($_POST['categories'])
-                ->setSlug($_POST['slug'])
-                ->setContent($_POST['content']);
-            $post->add();
-            $this->session->setFlash('success', "Article créé avec succès");
+            $validator = new Validator(array_merge($_POST, $_FILES));
+            $validator->isImageValid('image', 'Image invalide: ');
+            $validator->isNotEmpty('title', "Merci d'entrer un titre");
+            $validator->isNotEmpty('lead', "Merci d'entrer un chapô");
+            $validator->isNotEmpty('category', "Merci de sélectionner une catégorie");
+            $validator->isNotEmpty('slug', "Merci d'entrer une référence");
+            $validator->isNotEmpty('content', "L'article ne contient aucun contenu");
+            if ($validator->isValid()) {
+                $user = $this->session->getUser();
+                $post->setTitle($_POST['title'])
+                    ->setLead($_POST['lead'])
+                    ->setImage($_FILES['image'])
+                    ->setAuthorId($user['id'])
+                    ->setCategoryId($_POST['category'])
+                    ->setSlug($_POST['slug'])
+                    ->setContent($_POST['content']);
+                PostRepository::upload($post);
+                $post->edit();
+                $this->session->setFlash('success', "Article modifié avec succès");
+                $this->redirectTo('user', 'admin');
+            }
+            $errors = $validator->getErrors();
+            foreach ($errors as $error) {
+                $this->session->setFlash('danger', $error);
+            }
+            $this->redirectTo('user', 'admin');
         }
-
-        $post = PostRepository::findById($_GET['id']);
         if (isset($_SESSION['auth'])) {
             $categories = CategoryRepository::findAll();
-            if (!empty($_POST)) {
-                echo $this->twig->render('/admin/post/edit.html.twig', [
-                    'post' => $post,
-                    'categories' => $categories
-                ]);
-            } else {
-                echo $this->twig->render('/admin/post/edit.html.twig', [
-                    'post' => $post,
-                    'categories' => $categories
-                ]);
-            }
+            echo $this->twig->render('/admin/post/edit.html.twig', [
+                'post' => $post,
+                'categories' => $categories
+            ]);
         }
     }
 }

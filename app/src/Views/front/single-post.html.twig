@@ -11,9 +11,12 @@
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <h2 class="section-heading">{{ post.title }}</h2>
                     <span class="caption text-muted">Le {{ post.last_update|date("d / m / Y") }}</span>
-                    <div class="category"><a href="index.php?c=post&a=category">{{ post.category }}</a></div>
+                    <div class="category"><a href="{{ generate_route('category', { id:post.categoryId }) }}">{{ post.category }}</a></div>
                     <p>{{ post.lead }}</p>
-                    <a href="#!"><img class="img-fluid" src="assets/img/post-sample-image.jpg" alt="..." /></a>
+                    <p>
+                        <img src="assets/img/test-bg.jpg" alt="">
+                    </p>
+                    <p><img class="img-fluid" src="/img/uploads/{{ post.image }}" alt="..." /></p>
                     <p>{{ post.content }}</p>
                 </div>
             </div>

@@ -234,4 +234,21 @@ class UserController extends Controller implements Icontroller
             ]);
         }
     }
+
+    public function managePosts()
+    {
+        $posts = PostRepository::findAll();
+        $user = new User();
+        if ($user->isLogged()) {
+            $this->session->setFlash('danger', 'restriction_msg');
+            $this->redirectTo('front', 'home');
+        }
+
+        echo $this->twig->render('/admin/post/manage.html.twig', [
+            'session' => $this->session,
+            'posts' => $posts
+        ]);
+    }
+
+
 }

@@ -9,7 +9,8 @@
         <h2>Bonjour {{ session.user.username }}</h2>
 
         <div>
-            <a href="{{ generate_route('create') }}" class="btn btn-success">Ajouter un article</a>
+            <a href="{{ generate_route('managePosts') }}" class="btn">Gérer les articles</a>
+            <a href="{{ generate_route('managePosts') }}" class="btn">Gérer les pages</a>
         </div>
 
         <form method="post">
@@ -23,28 +24,5 @@
             </div>
             <button class="btn btn-primary">Changer de mot de passe</button>
         </form>
-
-        <table class="table">
-            <thead>
-                <th>Titre</th>
-                <th>Action</th>
-            </thead>
-            <tbody>
-            {% if posts is not empty %}
-                {% for post in posts %}
-                    <tr>
-                        <td><a href="{{ generate_route('singlePost', post.id) }}">{{ post.title }}</a></td>
-                        <td>
-                            <a href="index.php?c=post&a=edit&id={{ post.id }}" class="btn btn-primary">Modifier</a>
-                            <a href="index.php?c=post&a=delete&id={{ post.id }}" class="btn btn-danger"
-                                onclick="return confirm('Êtes vous sûr de vouloir supprimer cet article ?')">
-                                Supprimer
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-            </tbody>
-        </table>
     </div>
 {% endblock %}

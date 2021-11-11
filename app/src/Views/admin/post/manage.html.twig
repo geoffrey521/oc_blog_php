@@ -1,0 +1,37 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Gestion des articles
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Gestion des articles</h2>
+
+        <div>
+            <a href="{{ generate_route('create') }}" class="btn btn-success">Ajouter un article</a>
+        </div>
+        <table class="table">
+            <thead>
+            <th>Titre</th>
+            <th>Action</th>
+            </thead>
+            <tbody>
+            {% if posts is not empty %}
+                {% for post in posts %}
+                    <tr>
+                        <td><a href="{{ generate_route('singlePost', { id:post.id }) }}">{{ post.title }}</a></td>
+                        <td>
+                            <a href="{{ generate_route('edit', { id:post.id }) }}" class="btn btn-primary">Modifier</a>
+                            <a href="{{ generate_route('delete', { id:post.id }) }}" class="btn btn-danger"
+                               onclick="return confirm('Êtes vous sûr de vouloir supprimer cet article ?')">
+                                Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

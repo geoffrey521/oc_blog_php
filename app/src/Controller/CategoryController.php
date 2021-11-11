@@ -12,8 +12,18 @@ class CategoryController extends Controller implements Icontroller
         // TODO: Implement index() method.
     }
 
-    public function category()
+    public function addCategory()
     {
-        dd('EN CONSTRUCTION');
+        // TODO
+    }
+
+    public function editCategory()
+    {
+        // TODO
+    }
+
+    public function deleteCategory()
+    {
+        // TODO
     }
 }

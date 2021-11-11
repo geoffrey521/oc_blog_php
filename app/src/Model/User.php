@@ -40,6 +40,11 @@ class User extends MainModel
         return $this->isAdmin;
     }
 
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
     public function __construct($options = [])
     {
         $this->options = array_merge($this->options, $options);

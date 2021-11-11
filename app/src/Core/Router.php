@@ -60,10 +60,27 @@ class Router
                 'action' => 'showPosts',
                 'path' => 'posts'
             ],
+            'managePosts' => [
+                'controller' => new UserController(),
+                'action' => 'managePosts',
+                'path' => 'manage_post'
+            ],
             'create' => [
                 'controller' => new PostController(),
                 'action' => 'create',
                 'path' => 'admin_create'
+            ],
+            'edit' => [
+                'controller' => new PostController(),
+                'action' => 'edit',
+                'path' => 'edit',
+                'params' => ''
+            ],
+            'delete' => [
+                'controller' => new PostController(),
+                'action' => 'delete',
+                'path' => 'delete',
+                'params' => ''
             ],
             'singlePost' => [
                 'controller' => new PostController(),
