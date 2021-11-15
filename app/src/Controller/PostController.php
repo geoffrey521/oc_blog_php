@@ -19,9 +19,12 @@ class PostController extends Controller implements Icontroller
     public function showPosts()
     {
         $posts = PostRepository::findAll();
-        echo $this->twig->render('/front/posts.html.twig', [
+        echo $this->twig->render(
+            '/front/posts.html.twig',
+            [
             'posts' => $posts
-        ]);
+            ]
+        );
     }
 
     public function singlePost($id)
@@ -30,29 +33,36 @@ class PostController extends Controller implements Icontroller
         $category = null;
         if (isset($id)) {
             $post = PostRepository::findById($id);
-            $category = CategoryRepository::findById($post->category_id);
         }
         if (empty($post)) {
             $this->redirectTo('post');
         }
-        echo $this->twig->render('/front/single-post.html.twig', [
-            'post' => $post,
-            'category' => $category
-        ]);
+        echo $this->twig->render(
+            '/front/single-post.html.twig',
+            [
+            'post' => $post
+            ]
+        );
     }
 
     public function category()
     {
         if (isset($_SESSION['auth'])) {
-            echo $this->twig->render('/front/category.html.twig', [
+            echo $this->twig->render(
+                '/front/category.html.twig',
+                [
                 'session' => $this->session,
                 'flashes' => $this->session->getFlashes(),
-            ]);
+                ]
+            );
         } else {
-            echo $this->twig->render('/front/category.html.twig', [
+            echo $this->twig->render(
+                '/front/category.html.twig',
+                [
                 'session' => $this->session,
                 'flashes' => $this->session->getFlashes(),
-            ]);
+                ]
+            );
         }
     }
 
@@ -60,40 +70,30 @@ class PostController extends Controller implements Icontroller
     {
         if (!empty($_POST)) {
             $validator = new Validator(array_merge($_POST, $_FILES));
-            $post = new Post();
-            $validator->isImageValid('image', 'Image invalide: ');
-            $validator->isNotEmpty('title', "Merci d'entrer un titre");
-            $validator->isNotEmpty('lead', "Merci d'entrer un chapô");
-            $validator->isNotEmpty('category', "Merci de sélectionner une catégorie");
-            $validator->isNotEmpty('slug', "Merci d'entrer une référence");
-            $validator->isNotEmpty('content', "L'article ne contient aucun contenu");
+            $validator->validatePost();
             if ($validator->isValid()) {
                 // TODO create hydrate function to get user
                 $user = $this->session->getUser();
-                $post->setTitle($_POST['title'])
-                    ->setLead($_POST['lead'])
-                    ->setImage($_FILES['image'])
-                    ->setAuthorId($user['id'])
-                    ->setCategoryId($_POST['category'])
-                    ->setSlug($_POST['slug'])
-                    ->setContent($_POST['content']);
-                PostRepository::upload($post);
+                $post = Post::setPost($user);
                 $post->add();
                 $this->session->setFlash('success', "Article créé avec succès");
-                $this->redirectTo('user', 'admin');
+                $this->redirectTo('user', 'manage_post');
             }
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 $this->session->setFlash('danger', $error);
             }
-            $this->redirectTo('user', 'admin');
+            $this->redirectTo('user', 'manage_post');
         }
 
         if (isset($_SESSION['auth'])) {
             $categories = CategoryRepository::findAll();
-            echo $this->twig->render('/admin/post/create.html.twig', [
+            echo $this->twig->render(
+                '/admin/post/create.html.twig',
+                [
                 'categories' => $categories
-            ]);
+                ]
+            );
         }
     }
 
@@ -113,38 +113,29 @@ class PostController extends Controller implements Icontroller
         $post = PostRepository::findById($id);
         if (!empty($_POST)) {
             $validator = new Validator(array_merge($_POST, $_FILES));
-            $validator->isImageValid('image', 'Image invalide: ');
-            $validator->isNotEmpty('title', "Merci d'entrer un titre");
-            $validator->isNotEmpty('lead', "Merci d'entrer un chapô");
-            $validator->isNotEmpty('category', "Merci de sélectionner une catégorie");
-            $validator->isNotEmpty('slug', "Merci d'entrer une référence");
-            $validator->isNotEmpty('content', "L'article ne contient aucun contenu");
+            $validator->validatePost();
             if ($validator->isValid()) {
                 $user = $this->session->getUser();
-                $post->setTitle($_POST['title'])
-                    ->setLead($_POST['lead'])
-                    ->setImage($_FILES['image'])
-                    ->setAuthorId($user['id'])
-                    ->setCategoryId($_POST['category'])
-                    ->setSlug($_POST['slug'])
-                    ->setContent($_POST['content']);
-                PostRepository::upload($post);
+                Post::setPost($user);
                 $post->edit();
                 $this->session->setFlash('success', "Article modifié avec succès");
-                $this->redirectTo('user', 'admin');
+                $this->redirectTo('user', 'manage_post');
             }
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 $this->session->setFlash('danger', $error);
             }
-            $this->redirectTo('user', 'admin');
+            $this->redirectTo('user', 'manage_post');
         }
         if (isset($_SESSION['auth'])) {
             $categories = CategoryRepository::findAll();
-            echo $this->twig->render('/admin/post/edit.html.twig', [
+            echo $this->twig->render(
+                '/admin/post/edit.html.twig',
+                [
                 'post' => $post,
                 'categories' => $categories
-            ]);
+                ]
+            );
         }
     }
 }

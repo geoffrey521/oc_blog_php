@@ -17,10 +17,10 @@ class CategoryRepository extends BaseRepository implements RepositoryInterface
         return self::getOne(Category::getTableName(), Category::class, ['id' => $categoryId]);
     }
 
-//    public static function findByPostId(int $postId)
-//    {
-//        return self::getOne(Category::getTableName(), Category::class, ['id' => $])
-//    }
+    //    public static function findByPostId(int $postId)
+    //    {
+    //        return self::getOne(Category::getTableName(), Category::class, ['id' => $])
+    //    }
 
     public static function deleteById(int $id)
     {

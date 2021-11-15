@@ -10,45 +10,11 @@ use App\Model\Post;
 use App\Model\Session;
 use App\Model\User;
 use App\Model\Validator;
+use App\Repository\CustomPageRepository;
 use App\Repository\PostRepository;
 
 class UserController extends Controller implements Icontroller
 {
-    /**
-     * Show admin dashboard if user is admin
-     */
-    public function index()
-    {
-        die('user index');
-//        $isLogged = $this->getAuth()->isLogged();
-//        $posts = Post::getAll();
-//        if(!$isLogged)
-//        {
-//            $this->session->setFlash('danger', 'restriction_msg');
-//            $this->redirectTo('front');
-//        } else {
-//            $username = $_SESSION['auth']->username;
-//            if (!empty($_POST)) {
-//                $user = new User(Session::getInstance());
-//                if ($_POST['password'] != $_POST['password_confirm']) {
-//                    $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
-//                } elseif (empty($_POST['password'])) {
-//                    $this->session->setFlash('danger', 'Le mot de passe ne peut pas être vide');
-//                } else {
-//                    $user_id = $_SESSION['auth']->id;
-//                    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-//                    $user->updatePassword($password, $user_id);
-//                    $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
-//                }
-//            }
-//
-//            echo $this->twig->render('/user/admin.html.twig', [
-//                'session' => $this->session,
-//                'username' => $username,
-//                'posts' => $posts
-//            ]);
-//        }
-    }
 
     public function register()
     {
@@ -98,11 +64,16 @@ class UserController extends Controller implements Icontroller
                 );
                 $this->redirectTo('user', 'login');
             } else {
-                /** need to throw errors */
+                /**
+ * need to throw errors
+*/
                 //  $this->redirectTo('user', 'register');
-                $this->twig->render('/front/register.html.twig', [
+                $this->twig->render(
+                    '/front/register.html.twig',
+                    [
                     'errors' => [$errors]
-                ]);
+                    ]
+                );
             }
         } else {
             echo $this->twig->render('/front/register.html.twig');
@@ -228,10 +199,13 @@ class UserController extends Controller implements Icontroller
                 }
             }
 
-            echo $this->twig->render('/user/admin.html.twig', [
+            echo $this->twig->render(
+                '/user/admin.html.twig',
+                [
                 'session' => $this->session,
                 'posts' => $posts
-            ]);
+                ]
+            );
         }
     }
 
@@ -244,11 +218,28 @@ class UserController extends Controller implements Icontroller
             $this->redirectTo('front', 'home');
         }
 
-        echo $this->twig->render('/admin/post/manage.html.twig', [
-            'session' => $this->session,
+        echo $this->twig->render(
+            '/admin/post/manage.html.twig',
+            [
             'posts' => $posts
-        ]);
+            ]
+        );
     }
 
+    public function managePages()
+    {
+        $pages = CustomPageRepository::findAll();
+        $user = new User();
+        if ($user->isLogged()) {
+            $this->session->setFlash('danger', 'restriction_msg');
+            $this->redirectTo('front', 'home');
+        }
 
+        echo $this->twig->render(
+            '/admin/page/manage.html.twig',
+            [
+            'pages' => $pages
+            ]
+        );
+    }
 }

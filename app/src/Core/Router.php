@@ -5,6 +5,7 @@ namespace App\Core;
 use App\Controller\CategoryController;
 use App\Controller\ExceptionController;
 use App\Controller\FrontController;
+use App\Controller\CustomPageController;
 use App\Controller\PostController;
 use App\Controller\UserController;
 
@@ -87,8 +88,35 @@ class Router
                 'action' => 'singlePost',
                 'path' => 'singlePost',
                 'params' => ''
+            ],
+            'showCustomPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'showCustomPage',
+                'path' => 'page',
+                'params' => ''
+            ],
+            'managePages' => [
+                'controller' => new UserController(),
+                'action' => 'managePages',
+                'path' => 'manage_pages'
+            ],
+            'createPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'createPage',
+                'path' => 'create_page'
+            ],
+            'editPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'editPage',
+                'path' => 'edit_page',
+                'params' => ''
+            ],
+            'deletePage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'deletePage',
+                'path' => 'delete_page',
+                'params' => ''
             ]
-
         ];
     }
 
@@ -96,7 +124,6 @@ class Router
     {
         $uri = array_slice(explode('/', $_SERVER['REQUEST_URI']), 1);
         $path = array_shift($uri);
-
         $self = new self();
         $controller = $self->findByPath($path ?? '');
         if (empty($controller)) {
@@ -142,8 +169,11 @@ class Router
 
     public function findByPath($path)
     {
-        return array_filter($this->routes, function ($route) use ($path) {
-            return $route['path'] === $path;
-        });
+        return array_filter(
+            $this->routes,
+            function ($route) use ($path) {
+                return $route['path'] === $path;
+            }
+        );
     }
 }

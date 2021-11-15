@@ -54,7 +54,8 @@ class User extends MainModel
 
     /**
      * Hash a password who has given and crypt with bcrypt
-     * @param $password
+     *
+     * @param  $password
      * @return string
      */
     public static function hashPassword($password)
@@ -64,12 +65,13 @@ class User extends MainModel
 
     /**
      * Insert user datas to the database
-     * @param $db
-     * @param $firstname
-     * @param $lastname
-     * @param $username
-     * @param $password
-     * @param $email
+     *
+     * @param  $db
+     * @param  $firstname
+     * @param  $lastname
+     * @param  $username
+     * @param  $password
+     * @param  $email
      * @throws \Exception
      */
     public function register($firstname, $lastname, $username, $password, $email)
@@ -101,9 +103,9 @@ class User extends MainModel
     }
 
     /**
-     * @param $user_id
-     * @param $token
-     * @param $session
+     * @param  $user_id
+     * @param  $token
+     * @param  $session
      * @return bool
      */
     public function confirm($user_id, $token)

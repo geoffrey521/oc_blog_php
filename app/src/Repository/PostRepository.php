@@ -11,7 +11,8 @@ class PostRepository extends BaseRepository implements RepositoryInterface
 {
     public static function getLastFour()
     {
-        $posts = self::getMany("SELECT * FROM " . Post::getTableName() . " ORDER BY last_update DESC LIMIT 4", Post::class);
+        $posts = self::getMany("SELECT * FROM " . Post::getTableName() .
+            " ORDER BY last_update DESC LIMIT 4", Post::class);
         foreach ($posts as $post) {
             $category = self::getOne(Category::getTableName(), Category::class, ['id' => $post->category_id]);
             $post->setCategory($category->getName())
@@ -39,18 +40,5 @@ class PostRepository extends BaseRepository implements RepositoryInterface
     public static function deleteById(int $postId)
     {
         return self::delete(Post::getTableName(), ['id' => $postId]);
-    }
-
-
-    public static function upload(Post $post)
-    {
-        $image = [];
-        if (!empty($post->getImage())) {
-            $image = $post->getImage();
-        }
-        return move_uploaded_file(
-            $image['tmp_name'],
-            __DIR__ . '/../../public/assets/img/uploads/' . basename($image['name'])
-        );
     }
 }

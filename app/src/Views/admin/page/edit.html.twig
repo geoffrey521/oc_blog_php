@@ -1,0 +1,59 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Modifier une page
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Modifier la page: {{ page.name }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-floating">
+                <input type="text" name="title" class="form-control" placeholder="titre de la page..." value="{{ page.title }}" />
+                <label for="title">Titre de la page*</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="catchPhrase" class="form-control" placeholder="phrase d'accroche" value="{{ page.catch_phrase }}" />
+                <label for="catchPhrase">Phrase d'accroche</label>
+            </div>
+            <div class="form-floating">
+                <input type="file" name="image" class="form-control" placeholder="image" />
+                <label for="image">Image de fond</label>
+                {% if page.background is not empty %}
+                <img src="/assets/img/uploads/{{ page.background }}" alt="#">
+                {% endif %}
+            </div>
+            <fieldset>
+                <legend>Contenu</legend>
+                <div class="form-floating mt-2">
+                    <input type="text" name="contentTitle" class="form-control" placeholder="titre secondaire..." value="{{ page.content_title }}"/>
+                    <label for="contentTitle">Titre secondaire</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="content" id="" cols="30" rows="10" required>{{ page.content }}</textarea>
+                    <label for="content">Contenu*</label>
+                </div>
+            </fieldset>
+            <div class="form-floating Form-checkbox">
+                <input
+                        class="form-check" type="checkbox" name="displayNavbar" value="1"
+                        {% if page.display_navbar is not null %}
+                         checked
+                        {% endif %}
+                />
+                <label for="displayNavbar">Ajouter un lien dans le menu principal</label>
+            </div>
+            <div class="form-floating Form-checkbox">
+                <input
+                        class="form-check" type="checkbox" name="displayFooter" value="1"
+                        {% if page.display_footer is not null %}
+                            checked
+                        {% endif %}
+                />
+                <label for="displayFooter">Ajouter un lien en bas de page</label>
+            </div>
+
+            <button class="btn btn-primary mt-5">Publier</button>
+        </form>
+    </div>
+{% endblock %}

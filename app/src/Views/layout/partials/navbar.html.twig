@@ -10,6 +10,9 @@
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('home') }}">Accueil</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showPosts') }}">Tous les articles</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('contact') }}">Contact</a></li>
+                {% for page in menuPages %}
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showCustomPage', { slug:page.slug }) }}">{{ page.name }}</a></li>
+                {% endfor %}
             </ul>
             <div class="py-4 py-lg-0 ms-auto">
 

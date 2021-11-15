@@ -1,0 +1,55 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Créer une page
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Créer une page</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-floating">
+                <input type="text" name="name" class="form-control" placeholder="Nom de la page..." required />
+                <label for="name">Nom de la page*</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="title" class="form-control" placeholder="titre de la page..." />
+                <label for="title">Titre de la page*</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="catchPhrase" class="form-control" placeholder="phrase d'accroche" />
+                <label for="catchPhrase">Phrase d'accroche</label>
+            </div>
+            <div class="form-floating">
+                <input type="file" name="image" class="form-control" placeholder="image" />
+                <label for="image">Image de fond</label>
+            </div>
+            <fieldset>
+                <legend>Contenu</legend>
+                <div class="form-floating mt-2">
+                    <input type="text" name="contentTitle" class="form-control" placeholder="titre secondaire..." value="{{ page.title }}"/>
+                    <label for="contentTitle">Titre secondaire</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="content" id="" cols="30" rows="10" required></textarea>
+                    <label for="content">Contenu*</label>
+                </div>
+            </fieldset>
+            <div class="form-floating Form-checkbox">
+                <input class="form-check" type="checkbox" name="displayNavbar" value="1" />
+                <label for="displayNavbar">Ajouter un lien dans le menu principal</label>
+            </div>
+            <div class="form-floating Form-checkbox">
+                <input class="form-check" type="checkbox" name="displayFooter" value="1" />
+                <label for="displayFooter">Ajouter un lien en bas de page</label>
+            </div>
+            <div class="form-floating Form-checkbox">
+                <input class="form-check" type="checkbox" name="published" value="1" />
+                <label for="published">Publier la page</label>
+            </div>
+
+            <button class="btn btn-primary mt-5">Créer la page</button>
+        </form>
+    </div>
+{% endblock %}

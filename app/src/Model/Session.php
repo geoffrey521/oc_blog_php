@@ -42,14 +42,14 @@ class Session
         return $flashes;
     }
 
-//    public function setAuth($params = [])
-//    {
-//        if (isset($_SESSION['auth'])) {
-//            foreach ($params as $param) {
-//                $this->auth[$param] = $_SESSION['auth']->$param;
-//            }
-//        }
-//    }
+    //    public function setAuth($params = [])
+    //    {
+    //        if (isset($_SESSION['auth'])) {
+    //            foreach ($params as $param) {
+    //                $this->auth[$param] = $_SESSION['auth']->$param;
+    //            }
+    //        }
+    //    }
 
     public function write($key, $value)
     {

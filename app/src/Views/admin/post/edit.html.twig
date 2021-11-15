@@ -17,6 +17,12 @@
                 <label for="lead">Chapo</label>
             </div>
             <div class="form-floating">
+                <input type="file" name="image" class="form-control" placeholder="image"  />
+                <label for="image">Image</label>
+                <img src="/assets/img/uploads/{{ post.image }}" alt="">
+                <button class="btn btn-danger">Supprimer image</button>
+            </div>
+            <div class="form-floating">
                 <textarea class="form-control" name="content" id="" cols="30" rows="10" placeholder="Contenu de l'article" required>{{ post.content }}</textarea>
                 <label for="content">Contenu</label>
             </div>

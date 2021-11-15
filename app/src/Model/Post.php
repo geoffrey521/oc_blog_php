@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Core\Text;
 use App\Repository\CategoryRepository;
+use App\Repository\PostRepository;
 
 class Post extends MainModel
 {
@@ -116,7 +117,7 @@ class Post extends MainModel
     /**
      * @return mixed
      */
-    public function getAutor()
+    public function getAuthor()
     {
         return $this->author;
     }
@@ -223,5 +224,20 @@ class Post extends MainModel
     public static function getTableName()
     {
         return self::TABLE_NAME;
+    }
+
+    public static function setPost($user)
+    {
+        $post = new self;
+        $post->setTitle($_POST['title'])
+            ->setLead($_POST['lead'])
+            ->setImage($_FILES['image'])
+            ->setAuthorId($user['id'])
+            ->setCategoryId($_POST['category'])
+            ->setSlug($_POST['slug'])
+            ->setContent($_POST['content']);
+        PostRepository::uploadImage($post);
+
+        return $post;
     }
 }

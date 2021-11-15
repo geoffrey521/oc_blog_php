@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Model\Session;
+use App\Repository\CustomPageRepository;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -16,17 +17,26 @@ class Controller
     protected Session $session;
     public function __construct()
     {
-        $this->twig = new Environment(new FilesystemLoader(__DIR__ . '/../Views'), [
+        $this->twig = new Environment(
+            new FilesystemLoader(__DIR__ . '/../Views'),
+            [
             'cache' => false,
             'debug' => true,
-        ]);
+            ]
+        );
         $this->twig->addExtension(new DebugExtension());
         $this->session = Session::getInstance();
         $this->twig->addGlobal('session', $this->session);
-        $this->twig->addGlobal('debug_time', round(1000 * (microtime(true) - DEBUG_TIME)));
-        $this->twig->addFunction(new TwigFunction('generate_route', function ($name, $params = []) {
-            return Router::generateRoute($name, $params);
-        }));
+        $this->twig->addGlobal('menuPages', CustomPageRepository::findDisplayedMenuPages());
+        $this->twig->addGlobal('footerPages', CustomPageRepository::findDisplayedfooterPages());
+        $this->twig->addFunction(
+            new TwigFunction(
+                'generate_route',
+                function ($name, $params = []) {
+                    return Router::generateRoute($name, $params);
+                }
+            )
+        );
     }
 
     public function redirectTo($class, $action = "", array $params = [])

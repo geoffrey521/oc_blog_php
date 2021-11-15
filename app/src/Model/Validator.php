@@ -2,16 +2,12 @@
 
 namespace App\Model;
 
-class Validator extends MainModel
+class Validator
 {
-
     private $errors = [];
 
     public function __construct(private $data)
-    {
-        parent::__construct();
-        $this->data = $data;
-    }
+    {}
 
     private function getField($field, $key = null)
     {
@@ -40,7 +36,7 @@ class Validator extends MainModel
 
     public function isUniq($field, $table, $errorMsg)
     {
-        $record = $this->query("SELECT id FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
+        $record = $this->query("SELECT id FROM $table WHERE $field = ?", [$this->getField($field)])->fetch();
         if ($record) {
             $this->errors[$field] = $errorMsg;
         }
@@ -117,5 +113,15 @@ class Validator extends MainModel
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    public function validatePost()
+    {
+        $this->isImageValid('image', 'Image invalide: ');
+        $this->isNotEmpty('title', "Merci d'entrer un titre");
+        $this->isNotEmpty('lead', "Merci d'entrer un chapô");
+        $this->isNotEmpty('category', "Merci de sélectionner une catégorie");
+        $this->isNotEmpty('slug', "Merci d'entrer une référence");
+        $this->isNotEmpty('content', "L'article ne contient aucun contenu");
     }
 }

@@ -4,7 +4,7 @@ namespace App\Model;
 
 use App\Repository\CategoryRepository;
 
-class Category
+class Category extends MainModel
 {
     private const TABLE_NAME = 'category';
     private $id;
