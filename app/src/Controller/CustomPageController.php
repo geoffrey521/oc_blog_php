@@ -37,7 +37,7 @@ class CustomPageController extends Controller
             $validator->isNotEmpty('name', 'La page doit avoir un nom');
             $validator->isNotEmpty('title', 'La page doit avoir un titre');
             $validator->isNotEmpty('content', 'La page doit avoir un contenu');
-            $validator->isUniq('name', CustomPage::getTableName(), 'Une page détient déjà ce nom');
+            $validator->isExist('name', CustomPage::getTableName(), 'Une page détient déjà ce nom');
             if (!empty($_FILES['image']['name'])) {
                 $validator->isImageValid('image', 'Image invalide: ');
             }
@@ -47,8 +47,7 @@ class CustomPageController extends Controller
                     ->setCatchPhrase($_POST['catchPhrase'])
                     ->setImage($_FILES['image'])
                     ->setContentTitle($_POST['contentTitle'])
-                    ->setContent($_POST['content'])
-                    ->setSlug($_POST['name']);
+                    ->setContent($_POST['content']);
                 if (array_key_exists('displayNavbar', $_POST)) {
                     $page->setDisplayNavbar($_POST['displayNavbar']);
                 }
@@ -85,22 +84,18 @@ class CustomPageController extends Controller
                 $validator->isImageValid('image', 'Image invalide: ');
             }
             if ($validator->isValid()) {
+                $checkboxes = $page->verifyCheckedBoxes(['displayNavbar', 'displayFooter', 'published'], $_POST);
+
                 $page->setTitle($_POST['title'])
                     ->setCatchPhrase($_POST['catchPhrase'])
                     ->setImage($_FILES['image'])
                     ->setContentTitle($_POST['contentTitle'])
-                    ->setContent($_POST['content']);
-                if (array_key_exists('displayNavbar', $_POST)) {
-                    $page->setDisplayNavbar($_POST['displayNavbar']);
-                }
-                if (array_key_exists('displayFooter', $_POST)) {
-                    $page->setDisplayFooter($_POST['displayFooter']);
-                }
-                if (array_key_exists('published', $_POST)) {
-                    $page->setPublished($_POST['published']);
-                }
+                    ->setContent($_POST['content'])
+                    ->setDisplayNavbar($checkboxes['displayNavbar'])
+                    ->setDisplayFooter($checkboxes['displayFooter'])
+                    ->setPublished($checkboxes['published']);
                 CustomPageRepository::uploadImage($page);
-                $page->edit();
+                $page->edit($id);
                 $this->session->setFlash('success', 'La page a bien été modifiée');
                 $this->redirectTo('user', 'manage_pages');
             }

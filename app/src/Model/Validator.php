@@ -2,12 +2,14 @@
 
 namespace App\Model;
 
-class Validator
+class Validator extends MainModel
 {
     private $errors = [];
 
     public function __construct(private $data)
-    {}
+    {
+        parent::__construct();
+    }
 
     private function getField($field, $key = null)
     {
@@ -66,7 +68,7 @@ class Validator
 
     public function isExist($field, $table, $errorMsg)
     {
-        $record = $this->query("SELECT $field FROM $table WHERE username = ?", [$this->getField($field)])->fetch();
+        $record = $this->query("SELECT $field FROM $table WHERE $field = ?", [$this->getField($field)]);
         if (!$record) {
             $this->errors[$field] = $errorMsg;
         }
@@ -117,7 +119,9 @@ class Validator
 
     public function validatePost()
     {
-        $this->isImageValid('image', 'Image invalide: ');
+        if (!empty($_FILES['image']['name'])) {
+            $this->isImageValid('image', 'Image invalide: ');
+        }
         $this->isNotEmpty('title', "Merci d'entrer un titre");
         $this->isNotEmpty('lead', "Merci d'entrer un chapô");
         $this->isNotEmpty('category', "Merci de sélectionner une catégorie");

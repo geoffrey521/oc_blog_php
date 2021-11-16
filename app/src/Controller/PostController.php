@@ -55,15 +55,15 @@ class PostController extends Controller implements Icontroller
                 'flashes' => $this->session->getFlashes(),
                 ]
             );
-        } else {
-            echo $this->twig->render(
-                '/front/category.html.twig',
-                [
-                'session' => $this->session,
-                'flashes' => $this->session->getFlashes(),
-                ]
-            );
+            return;
         }
+        echo $this->twig->render(
+            '/front/category.html.twig',
+            [
+            'session' => $this->session,
+            'flashes' => $this->session->getFlashes(),
+            ]
+        );
     }
 
     public function create()
@@ -72,7 +72,6 @@ class PostController extends Controller implements Icontroller
             $validator = new Validator(array_merge($_POST, $_FILES));
             $validator->validatePost();
             if ($validator->isValid()) {
-                // TODO create hydrate function to get user
                 $user = $this->session->getUser();
                 $post = Post::setPost($user);
                 $post->add();

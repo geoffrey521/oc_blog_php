@@ -115,9 +115,8 @@ class User extends MainModel
             $this->query('UPDATE user SET confirm_token = NULL, confirmed_at = NOW() WHERE id = ?', [$user_id]);
             $this->session->write('auth', $user);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -146,14 +145,14 @@ class User extends MainModel
                 if ($expected == $remember_token) {
                     $this->connect($user);
                     setcookie('remember', $remember_token, time() + 60 * 60 * 24 * 7);
+                    return;
                 }
-            } else {
-                setcookie('remember', null, -1);
             }
+            setcookie('remember', null, -1);
         }
     }
 
-    public function login($username, $password, $remember = false)
+    public function login($username, $password, $remember)
     {
         if (!empty($username) && !empty($password)) {
             $user = $this->query(
@@ -249,7 +248,7 @@ class User extends MainModel
         if (!$this->session->read('auth')) {
             $this->session->setFlash('danger', $this->options['restriction_msg']);
             header('Location: index.php?p=login');
-            exit();
+            return;
         }
     }
 }

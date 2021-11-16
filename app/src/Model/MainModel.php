@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use PDO;
+use PDOStatement;
 
 class MainModel
 {
@@ -15,26 +16,18 @@ class MainModel
     }
 
     /**
-     * @param  $query
-     * @param  bool|array $params
-     * @return false|\PDOStatement
+     * @param $request
+     * @param bool|array $params
+     * @return false|PDOStatement
      */
-    public function query($request, $params = false)
+    public function query($request, array $params)
     {
         if ($params) {
             $req = $this->pdo->prepare($request);
             $req->execute($params);
-        } else {
-            $req = $this->pdo->query($request);
+            return $req;
         }
-        return $req;
-    }
-
-    public function delete($request, $params = false)
-    {
-        $req = $this->pdo->prepare("DELETE FROM " . static::TABLE_NAME);
-        $result = $req->execute($params);
-        return $result;
+        return $this->pdo->query($request);
     }
 
     /**
@@ -45,6 +38,11 @@ class MainModel
         return $this->pdo->lastInsertId();
     }
 
+    /**
+     * @param $string
+     * @param string $delimiter
+     * @return string
+     */
     public function slugify($string, $delimiter = '-')
     {
         $oldLocale = setlocale(LC_ALL, '0');

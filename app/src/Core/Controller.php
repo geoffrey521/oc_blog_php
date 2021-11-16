@@ -48,6 +48,6 @@ class Controller
             }
         }
         header("Location: /$action" . $attributes);
-        exit();
+        return;
     }
 }

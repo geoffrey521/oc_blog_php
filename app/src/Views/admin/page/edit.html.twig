@@ -52,6 +52,14 @@
                 />
                 <label for="displayFooter">Ajouter un lien en bas de page</label>
             </div>
+            <div class="form-floating Form-checkbox">
+                <input class="form-check" type="checkbox" name="published" value="1"
+                        {% if page.published is not null %}
+                            checked
+                        {% endif %}
+                />
+                <label for="published">Publier la page</label>
+            </div>
 
             <button class="btn btn-primary mt-5">Publier</button>
         </form>

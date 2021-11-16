@@ -8,6 +8,7 @@ use App\Controller\FrontController;
 use App\Controller\CustomPageController;
 use App\Controller\PostController;
 use App\Controller\UserController;
+use Exception;
 
 class Router
 {
@@ -162,7 +163,7 @@ class Router
     public function getPath($name, $params = [])
     {
         if (!isset($this->routes[$name])) {
-            throw new \Exception('route not define');
+            throw new Exception('route not define');
         }
         return $this->routes[$name]['path'];
     }

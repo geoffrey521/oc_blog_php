@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Core\Controller;
 use App\Core\Icontroller;
-use App\Model\Auth;
 use App\Model\Database;
 use App\Model\Post;
 use App\Model\Session;
@@ -16,6 +15,11 @@ use App\Repository\PostRepository;
 class UserController extends Controller implements Icontroller
 {
 
+    /**
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
+     */
     public function register()
     {
         if (!empty($_POST)) {
@@ -63,21 +67,14 @@ class UserController extends Controller implements Icontroller
                     'Un email de confirmation vous a été envoyé pour valider votre compte.'
                 );
                 $this->redirectTo('user', 'login');
-            } else {
-                /**
- * need to throw errors
-*/
-                //  $this->redirectTo('user', 'register');
-                $this->twig->render(
-                    '/front/register.html.twig',
-                    [
-                    'errors' => [$errors]
-                    ]
-                );
             }
-        } else {
-            echo $this->twig->render('/front/register.html.twig');
+            $errors = $validator->getErrors();
+            foreach ($errors as $error) {
+                $this->session->setFlash('danger', $error);
+            }
+            $this->redirectTo('user', 'register');
         }
+        echo $this->twig->render('/front/register.html.twig');
     }
 
     /**
@@ -128,10 +125,9 @@ class UserController extends Controller implements Icontroller
         if ($user->confirm($id, $token)) {
             $this->session->setFlash('success', 'Votre compte à bien été validé.');
             $this->redirectTo('user');
-        } else {
-            $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
-            $this->redirectTo('user', 'login');
         }
+        $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
+        $this->redirectTo('user', 'login');
     }
 
     public function forget()
@@ -141,9 +137,8 @@ class UserController extends Controller implements Icontroller
             if ($this->getAuth()->resetPassword($db, $_POST['email'])) {
                 $this->session->setFlash('success', 'Un mail pour réinitialiser votre mot de passe vous a été envoyé');
                 $this->redirectTo('user', 'login');
-            } else {
-                $this->session->setFlash('danger', 'Aucun compte n\'est associé à cet email');
             }
+            $this->session->setFlash('danger', 'Aucun compte n\'est associé à cet email');
         }
 
         echo $this->twig->render('/user/forget-password.html.twig');
@@ -164,17 +159,16 @@ class UserController extends Controller implements Icontroller
                         $user->updatePassword($db, $password, $_GET['id']);
                         $user->connect($user_properties);
                         $this->session->setFlash('success', 'Votre mot de passe a été réinitialisée');
-                        $this->redirectTo('user');
+                        $this->redirectTo('user', 'login');
                     }
                 }
                 echo $this->twig->render('/user/reset-password.html.twig');
-            } else {
-                $this->session->setFlash('danger', 'Lien invalide');
-                $this->redirectTo('user', 'login');
+                return;
             }
-        } else {
+            $this->session->setFlash('danger', 'Lien invalide');
             $this->redirectTo('user', 'login');
         }
+        $this->redirectTo('user', 'login');
     }
 
     public function admin()
@@ -184,29 +178,31 @@ class UserController extends Controller implements Icontroller
         if ($user->isLogged()) {
             $this->session->setFlash('danger', 'restriction_msg');
             $this->redirectTo('front', 'home');
-        } else {
-            if (!empty($_POST)) {
-                $user = new User();
-                if ($_POST['password'] != $_POST['password_confirm']) {
-                    $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
-                } elseif (empty($_POST['password'])) {
-                    $this->session->setFlash('danger', 'Le mot de passe ne peut pas être vide');
-                } else {
-                    $user_id = $_SESSION['auth']->id;
-                    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-                    $user->updatePassword($password, $user_id);
-                    $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
-                }
-            }
-
-            echo $this->twig->render(
-                '/user/admin.html.twig',
-                [
-                'session' => $this->session,
-                'posts' => $posts
-                ]
-            );
         }
+        if (!empty($_POST)) {
+            $user = new User();
+            if ($_POST['password'] != $_POST['password_confirm']) {
+                $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
+                $this->redirectTo('user', 'admin');
+            }
+            if (empty($_POST['password'])) {
+                $this->session->setFlash('danger', 'Le mot de passe ne peut pas être vide');
+                $this->redirectTo('user', 'admin');
+            }
+            $user_id = $_SESSION['auth']->id;
+            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $user->updatePassword($password, $user_id);
+            $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
+            $this->redirectTo('user', 'admin');
+        }
+
+        echo $this->twig->render(
+            '/user/admin.html.twig',
+            [
+            'session' => $this->session,
+            'posts' => $posts
+            ]
+        );
     }
 
     public function managePosts()

@@ -15,10 +15,10 @@ class CustomPage extends MainModel
     private $image;
     private $contentTitle;
     private $content;
-    private $displayNavbar = null;
-    private $displayFooter = null;
+    private $displayNavbar = 0;
+    private $displayFooter = 0;
     private $slug;
-    private $published;
+    private $published = 0;
 
     public function getId()
     {
@@ -136,10 +136,7 @@ class CustomPage extends MainModel
         return $this->displayNavbar;
     }
 
-    /**
-     * @param mixed|null $displayNavbar
-     */
-    public function setDisplayNavbar(bool $displayNavbar = null)
+    public function setDisplayNavbar($displayNavbar)
     {
         $this->displayNavbar = $displayNavbar;
         return $this;
@@ -154,7 +151,7 @@ class CustomPage extends MainModel
     }
 
 
-    public function setDisplayFooter(bool $displayFooter = null)
+    public function setDisplayFooter($displayFooter)
     {
         $this->displayFooter = $displayFooter;
         return $this;
@@ -207,14 +204,19 @@ class CustomPage extends MainModel
         );
     }
 
-    public function edit()
+    public function edit($id)
     {
         $this->query(
-            'UPDATE page SET (
-                 title, catch_phrase, background, content_title, content, display_navbar, display_footer, published)
-                 VALUES(
-                 :title, :catch_phrase, :background, :content_title, 
-                   :content, :display_navbar, :display_footer, :published)',
+            'UPDATE page SET 
+                title = :title, 
+                catch_phrase = :catch_phrase, 
+                background = :background, 
+                content_title = :content_title, 
+                content = :content, 
+                display_navbar = :display_navbar, 
+                display_footer = :display_footer, 
+                published = :published 
+                WHERE id = :id',
             [
                 'title' => $this->title,
                 'catch_phrase' => $this->catchPhrase,
@@ -223,8 +225,22 @@ class CustomPage extends MainModel
                 'content' => $this->content,
                 'display_navbar' => $this->displayNavbar,
                 'display_footer' => $this->displayFooter,
-                'published' => $this->published
+                'published' => $this->published,
+                'id' => $id
             ]
         );
+    }
+
+    public function verifyCheckedBoxes($params, $post)
+    {
+        $checkboxes = [];
+        foreach ($params as $param) {
+            if (!array_key_exists($param, $post)) {
+                $checkboxes[$param] = 0;
+            } else {
+                $checkboxes[$param] = 1;
+            }
+        }
+        return $checkboxes;
     }
 }

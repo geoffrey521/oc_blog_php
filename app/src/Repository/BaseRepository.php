@@ -3,23 +3,24 @@
 namespace App\Repository;
 
 use App\Model\Database;
+use PDO;
 
 abstract class BaseRepository
 {
-    protected static function getMany($request, $class, $params = false)
+    protected static function getMany($request, $class, $params = [])
     {
         $db = Database::getDatabase();
-        if ($params) {
+        if (!empty($params)) {
             $where = [];
             foreach ($params as $key => $value) {
                 $where[] = $key . " = :" . $key;
             }
             $req = $db->prepare($request . " WHERE " . join(' AND ', $where));
             $req->execute($params);
-            return $req->fetchAll(\PDO::FETCH_CLASS, $class);
+            return $req->fetchAll(PDO::FETCH_CLASS, $class);
         }
         $req = $db->query($request);
-        return $req->fetchAll(\PDO::FETCH_CLASS, $class);
+        return $req->fetchAll(PDO::FETCH_CLASS, $class);
     }
 
     protected static function getOne($tableName, $class, $params = [])
@@ -29,10 +30,10 @@ abstract class BaseRepository
             $where[] = $key . " = :" . $key;
         }
         $db = Database::getDatabase();
-        $req = $db->prepare("SELECT * FROM " . $tableName . " WHERE " . join(' AND ', $where));
+        $db->setAttribute( PDO::ATTR_CASE, PDO::CASE_NATURAL );
+        $req = $db->prepare(sprintf("SELECT * FROM %s WHERE %s", $tableName,  join(' AND ', $where)));
         $req->execute($params);
-        $req->setFetchMode(\PDO::FETCH_CLASS, $class);
-
+        $req->setFetchMode(PDO::FETCH_CLASS, $class);
         // TODO need to change property name's underscores by camelCase
         return $req->fetch();
     }
@@ -44,7 +45,7 @@ abstract class BaseRepository
             $where[] = $key . " = :" . $key;
         }
         $db = Database::getDatabase();
-        $req = $db->prepare("DELETE FROM " . $tableName . " WHERE " . join(' AND ', $where));
+        $req = $db->prepare(sprintf("DELETE FROM %s WHERE %s", $tableName, join(' AND ', $where)));
         return $req->execute($params);
     }
 

@@ -47,15 +47,16 @@ class FrontController extends Controller implements Icontroller
                     'session' => $this->session,
                     ]
                 );
-            } else {
-                echo $this->twig->render(
-                    '/front/contact.html.twig',
-                    [
-                    'session' => $this->session,
-                    'errors' => $errors
-                    ]
-                );
+                return;
             }
+            echo $this->twig->render(
+                '/front/contact.html.twig',
+                [
+                'session' => $this->session,
+                'errors' => $errors
+                ]
+            );
+            return;
         }
         echo $this->twig->render(
             '/front/contact.html.twig',
