@@ -4,28 +4,21 @@ namespace App\Model;
 
 class User extends MainModel
 {
-
-    // TODO refactor
-    private array $options = [
-        'restriction_msg' => "Vous devez être connecté pour accéder à cette page"
-    ];
-    private $session;
-
-    private $id;
-    private $firstname;
-    private $lastname;
-    private $username;
-    private $email;
-    private $password;
-    private $createdAt;
-    private $agreedTermsDate;
-    private $isActive;
-    private $isAdmin;
-    private $confirmToken;
-    private $confirmedAt;
-    private $resetToken;
-    private $resetAt;
-    private $rememberToken;
+    protected $id;
+    protected $firstname;
+    protected $lastname;
+    protected $username;
+    protected $email;
+    protected $password;
+    protected $createdAt;
+    protected $agreedTermsDate;
+    protected $isActive;
+    protected $isAdmin;
+    protected $confirmToken;
+    protected $confirmedAt;
+    protected $resetToken;
+    protected $resetAt;
+    protected $rememberToken;
 
     /**
      * @return mixed
@@ -35,22 +28,243 @@ class User extends MainModel
         return $this->id;
     }
 
-    public function getIsAdmin()
+    /**
+     * @return mixed
+     */
+    public function getFirstname()
     {
-        return $this->isAdmin;
+        return $this->firstname;
     }
 
+    /**
+     * @param mixed $firstname
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param mixed $lastname
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getUsername()
     {
         return $this->username;
     }
 
-    public function __construct($options = [])
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username)
     {
-        $this->options = array_merge($this->options, $options);
-        $this->session = Session::getInstance();
-        parent::__construct();
+        $this->username = $username;
+        return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+   public function setPassword($password)
+   {
+       $this->password = self::hashPassword($password);
+       return $this;
+   }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAgreedTermsDate()
+    {
+        return $this->agreedTermsDate;
+    }
+
+    /**
+     * @param mixed $agreedTermsDate
+     */
+    public function setAgreedTermsDate($agreedTermsDate)
+    {
+        $this->agreedTermsDate = $agreedTermsDate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsAdmin()
+    {
+        return $this->isAdmin;
+    }
+
+    /**
+     * @param mixed $isAdmin
+     */
+    public function setIsAdmin($isAdmin)
+    {
+        $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfirmToken()
+    {
+        return $this->confirmToken;
+    }
+
+    /**
+     * @param mixed $confirmToken
+     */
+    public function setConfirmToken($confirmToken)
+    {
+        $this->confirmToken = $confirmToken;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfirmedAt()
+    {
+        return $this->confirmedAt;
+    }
+
+    /**
+     * @param mixed $confirmedAt
+     */
+    public function setConfirmedAt($confirmedAt)
+    {
+        $this->confirmedAt = $confirmedAt;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResetToken()
+    {
+        return $this->resetToken;
+    }
+
+    /**
+     * @param mixed $resetToken
+     */
+    public function setResetToken($resetToken)
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResetAt()
+    {
+        return $this->resetAt;
+    }
+
+    /**
+     * @param mixed $resetAt
+     */
+    public function setResetAt($resetAt)
+    {
+        $this->resetAt = $resetAt;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRememberToken()
+    {
+        return $this->rememberToken;
+    }
+
+    /**
+     * @param mixed $rememberToken
+     */
+    public function setRememberToken($rememberToken)
+    {
+        $this->rememberToken = $rememberToken;
+        return $this;
+    }
+
+
+
 
     /**
      * Hash a password who has given and crypt with bcrypt
@@ -74,9 +288,8 @@ class User extends MainModel
      * @param  $email
      * @throws \Exception
      */
-    public function register($firstname, $lastname, $username, $password, $email)
+    public function register()
     {
-        $password = $this->hashPassword($password);
         $bytes = random_bytes(30);
         $token = (bin2hex($bytes));
         $this->query(
@@ -84,21 +297,21 @@ class User extends MainModel
                     firstname, lastname, username, email, password, is_active, confirm_token)
                     VALUES(:firstname, :lastname, :username, :email, :password, :is_active, :confirm_token)',
             [
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'username' => $username,
-            'email' => $email,
-            'password' => $password,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'username' => $this->username,
+            'email' => $this->email,
+            'password' => $this->password,
             'is_active' => true,
             'confirm_token' => $token
             ]
         );
-        $user_id = $this->lastInsertId();
+        $userId = $this->lastInsertId();
         mail(
-            $email,
+            $this->email,
             'Confirmation de votre compte',
             "Merci de cliquer sur le lien ci-dessous pour valider votre compte\n\n
-            http://localhost/confirm&id=$user_id&token=$token"
+            http://localhost/confirm_account/id/$userId/token/$token"
         );
     }
 
@@ -108,12 +321,12 @@ class User extends MainModel
      * @param  $session
      * @return bool
      */
-    public function confirm($user_id, $token)
+    public function confirm($userId, $token)
     {
-        $user = $this->query('SELECT * FROM user WHERE id = ?', [$user_id])->fetch();
+        $user = $this->query('SELECT * FROM user WHERE id = ?', [$userId])->fetch();
         if ($user && $user->confirm_token == $token) {
-            $this->query('UPDATE user SET confirm_token = NULL, confirmed_at = NOW() WHERE id = ?', [$user_id]);
-            $this->session->write('auth', $user);
+            $this->query('UPDATE user SET confirm_token = NULL, confirmed_at = NOW() WHERE id = ?', [$userId]);
+            Session::write('auth', $user);
             return true;
         }
         return false;
@@ -124,24 +337,32 @@ class User extends MainModel
      */
     public function isLogged()
     {
-        return $this->session->read('auth') instanceof self;
+        return Session::read('auth');
+    }
+
+    public function isAdmin()
+    {
+        $user = Session::read('auth');
+        if ($user->is_admin) {
+            return true;
+        }
+        return false;
     }
 
     public function connect($user)
     {
-        $this->session->write('auth', $user);
-        $this->session->writetest('auth', $user);
+        Session::write('auth', $user);
     }
 
-    public function connectFromCookie($db)
+    public function connectFromCookie()
     {
-        if (isset($_COOKIE['remember']) && !$this->readAuth()) {
+        if (isset($_COOKIE['remember']) && !Session::read('auth')) {
             $remember_token = $_COOKIE['remember'];
             $parts = explode('==', $remember_token);
-            $user_id = $parts['0'];
-            $user = $this->query('SELECT * FROM user WHERE id = ?', [$user_id])->fetch();
+            $userId = $parts['0'];
+            $user = $this->query('SELECT * FROM user WHERE id = ?', [$userId])->fetch();
             if ($user) {
-                $expected = $user_id . '==' . $user->remember_token . sha1($user_id . 'memberwookies');
+                $expected = $userId . '==' . $user->remember_token . sha1($userId . 'memberwookies');
                 if ($expected == $remember_token) {
                     $this->connect($user);
                     setcookie('remember', $remember_token, time() + 60 * 60 * 24 * 7);
@@ -170,14 +391,14 @@ class User extends MainModel
         }
     }
 
-    public function remember($user_id)
+    public function remember($userId)
     {
         $bytes = random_bytes(125);
         $remember_token = (bin2hex($bytes));
         $this->query('UPDATE user SET remember_token = ?', [$remember_token]);
         setcookie(
             'remember',
-            $user_id . '==' . $remember_token . sha1($user_id . 'memberwookies'),
+            $userId . '==' . $remember_token . sha1($userId . 'memberwookies'),
             time() + 60 * 60 * 24 * 7
         );
     }
@@ -185,12 +406,10 @@ class User extends MainModel
     public function logout()
     {
         setcookie('remember', null, -1);
-        $this->session = Session::getInstance();
-        $this->session->delete('auth');
-        $this->session->setFlash('success', 'Vous avez été déconnecté');
+        Session::delete('auth');
     }
 
-    public function resetPassword($db, $email)
+    public function resetPassword($email)
     {
         $user = $this->query(
             'SELECT * FROM user WHERE (email = ?) AND confirmed_at IS NOT NULL',
@@ -199,45 +418,37 @@ class User extends MainModel
         if ($user) {
             $bytes = random_bytes(30);
             $reset_token = (bin2hex($bytes));
-            $db->query('UPDATE user SET reset_token = ?, reset_at = NOW() WHERE id = ?', [$reset_token, $user->id]);
+            $this->query('UPDATE user SET reset_token = ?, reset_at = NOW() WHERE id = ?', [$reset_token, $user->getId()]);
             mail(
                 $email,
                 'Blog php: Réinitialisation de votre mot de passe',
                 "Cliquer sur le lien ci-dessous pour Réinitialiser votre mot de passe\n\n
-                http://localhost/index.php?c=user&a=reset&id={$user->id}&token=$reset_token"
+                http://localhost/reset/id/$user->getId()/token/$reset_token"
             );
             return $user;
         }
         return false;
     }
 
-    public function checkResetToken($db, $user_id, $token)
+    public function checkResetToken($userId, $token)
     {
         return $this->query(
             'SELECT * FROM user WHERE id = ? 
                      AND reset_token IS NOT NULL 
                      AND reset_token = ? 
                      AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)',
-            [$user_id, $token]
+            [$userId, $token]
         )->fetch();
     }
 
-    public function updatePassword($password, $user_id)
+    public function updatePassword($password, $userId)
     {
-        $this->query('UPDATE user SET password = ? WHERE id = ?', [$password, $user_id]);
+        $this->query('UPDATE user SET password = ? WHERE id = ?', [$password, $userId]);
     }
 
-    public function deleteResetToken($db, $user_id)
+    public function deleteResetToken($userId)
     {
-        $this->query('UPDATE user SET reset_token = NULL WHERE id = ?', [$user_id]);
-    }
-
-    public function readAuth()
-    {
-        if (!$this->session->read('auth')) {
-            return false;
-        }
-        return $this->session->read('auth');
+        $this->query('UPDATE user SET reset_token = NULL WHERE id = ?', [$userId]);
     }
 
     /**
@@ -245,10 +456,10 @@ class User extends MainModel
      */
     public function restrict()
     {
-        if (!$this->session->read('auth')) {
+        if (!Session::read('auth')) {
             $this->session->setFlash('danger', $this->options['restriction_msg']);
             header('Location: index.php?p=login');
-            return;
+            exit;
         }
     }
 }

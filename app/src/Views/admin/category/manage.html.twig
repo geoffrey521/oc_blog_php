@@ -1,0 +1,36 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Gestion des catégories
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Gestion des pages</h2>
+
+        <div>
+            <a href="{{ generate_route('createCategory') }}" class="btn btn-success">Créer une nouvelle catégorie</a>
+        </div>
+        <table class="table">
+            <thead>
+            <th>Titre</th>
+            <th>Action</th>
+            </thead>
+            <tbody>
+            {% if categories is not empty %}
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            <a href="{{ generate_route('deleteCategory', { id:category.id }) }}" class="btn btn-danger"
+                               onclick="return confirm('Êtes vous sûr de vouloir supprimer cette catégorie ?')">
+                                Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

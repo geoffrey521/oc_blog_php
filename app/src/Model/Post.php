@@ -11,18 +11,18 @@ class Post extends MainModel
 {
     protected const TABLE_NAME = "post";
 
-    private $id;
-    private $title;
-    private $image;
-    private $lead;
-    private $excerpt;
-    private $content;
-    private $author;
-    private $category;
-    private $authorId;
-    private $categoryId;
-    private $slug;
-    private $last_update;
+    protected int $id;
+    protected $title;
+    protected $image;
+    protected $lead;
+    protected $excerpt;
+    protected $content;
+    protected $author;
+    protected $category;
+    protected $authorId;
+    protected $categoryId;
+    protected $slug;
+    protected $lastUpdate;
 
     /**
      * @return mixed
@@ -35,6 +35,7 @@ class Post extends MainModel
     public function setTitle($title)
     {
         $this->title = $title;
+        $this->slug = $this->slugify($title);
         return $this;
     }
 
@@ -49,8 +50,10 @@ class Post extends MainModel
     public function setImage($image)
     {
         if (is_array($image) && !empty($image)) {
-            $this->image = $image;
+            $this->image = $image['name'];
+            return $this;
         }
+        $this->image = $image;
         return $this;
     }
 
@@ -130,9 +133,9 @@ class Post extends MainModel
     }
 
     /**
-     * @return array
+     * @return int
      */
-    public function getCategoryId()
+    public function getCategoryId() :int
     {
         return $this->categoryId;
     }
@@ -168,7 +171,7 @@ class Post extends MainModel
 
     public function setLastUpdate()
     {
-        $this->last_update = date('d-F-Y');
+        $this->lastUpdate = date('d-F-Y');
         return $this;
     }
 
@@ -179,7 +182,7 @@ class Post extends MainModel
      */
     public function getLastUpdate(): DateTime
     {
-        return new DateTime($this->last_update);
+        return new DateTime($this->lastUpdate);
     }
 
     public function add()
@@ -190,7 +193,7 @@ class Post extends MainModel
                  VALUES(:title, :image, :lead, :author_id, :category_id, :slug, :content)',
             [
                 'title' => $this->title,
-                'image' => $this->image['name'],
+                'image' => $this->image,
                 'lead' => $this->lead,
                 'author_id' => $this->authorId,
                 'category_id' => $this->categoryId,
@@ -200,20 +203,27 @@ class Post extends MainModel
         );
     }
 
-    public function edit()
+    public function edit($id)
     {
         $this->query(
-            'UPDATE post SET (
-                 title, image, lead, author_id, category_id, slug, content)
-                 VALUES(:title, :image, :lead, :author_id, :category_id, :slug, :content)',
+            'UPDATE post SET
+                title = :title,
+                image = :image,
+                lead = :lead,
+                author_id = :author_id,
+                category_id = :category_id,
+                slug = :slug,
+                content = :content
+                WHERE id = :id',
             [
                 'title' => $this->title,
-                'image' => $this->image['name'],
+                'image' => $this->image,
                 'lead' => $this->lead,
                 'author_id' => $this->authorId,
                 'category_id' => $this->categoryId,
                 'slug' => $this->slug,
-                'content' => $this->content
+                'content' => $this->content,
+                'id' => $id
             ]
         );
     }
@@ -228,13 +238,13 @@ class Post extends MainModel
         $post = new self();
         $post->setTitle($_POST['title'])
             ->setLead($_POST['lead'])
-            ->setImage($_FILES['image'])
             ->setAuthorId($user['id'])
             ->setCategoryId($_POST['category'])
-            ->setSlug($_POST['slug'])
             ->setContent($_POST['content']);
-        PostRepository::uploadImage($post);
-
+        if (!empty($_FILES['image']['name'])) {
+            $post->setImage($_FILES['image']);
+            PostRepository::uploadImage($_FILES['image']);
+        }
         return $post;
     }
 }

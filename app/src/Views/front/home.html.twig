@@ -4,9 +4,8 @@
     GC
 {% endblock %}
 
-{% block mainTitle %}
-    Développeur d'application Web
-{% endblock %}
+{% block mainTitle %}Développeur d'application Web{% endblock %}
+
 
 {% block content %}
     <h1>Bienvenue sur mon site</h1>
@@ -18,7 +17,7 @@
                         <div class="col-md-10 col-lg-8 col-xl-7">
                             <div class="post-preview">
                                 <div class="category"><a href="{{ generate_route('category', { id:post.categoryId }) }}">{{ post.category }}</a></div>
-                                <a href="{{ generate_route('singlePost', { id:post.id }) }}">
+                                <a href="{{ generate_route('singlePost', { slug:post.slug }) }}">
                                     <h2 class="post-title">{{ post.title }}</h2>
                                     <h3 class="post-subtitle">{{ post.excerpt }}</h3>
                                     {% if post.image is not empty %}
@@ -28,7 +27,7 @@
                                 <p class="post-meta">
                                     Publié le {{ post.last_update|date("d / m / Y") }}
                                 </p>
-                                <p><a href="{{ generate_route('singlePost', { id:post.id }) }}" class="see-more">En voir plus</a></p>
+                                <p><a href="{{ generate_route('singlePost', { slug:post.slug }) }}" class="see-more">En voir plus</a></p>
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,6 @@ class CustomPageController extends Controller
 
     public function showCustomPage($slug)
     {
-        $page = null;
         if (isset($slug)) {
             $page = CustomPageRepository::findBySlug($slug);
             if (!$page->getPublished()) {
@@ -57,7 +56,7 @@ class CustomPageController extends Controller
                 if (array_key_exists('published', $_POST)) {
                     $page->setPublished($_POST['published']);
                 }
-                CustomPageRepository::uploadImage($page);
+                CustomPageRepository::uploadImage($_FILES['image']);
                 $page->add();
                 $this->session->setFlash('success', 'La page a bien été créée');
                 $this->redirectTo('user', 'manage_pages');
@@ -85,16 +84,17 @@ class CustomPageController extends Controller
             }
             if ($validator->isValid()) {
                 $checkboxes = $page->verifyCheckedBoxes(['displayNavbar', 'displayFooter', 'published'], $_POST);
-
                 $page->setTitle($_POST['title'])
                     ->setCatchPhrase($_POST['catchPhrase'])
-                    ->setImage($_FILES['image'])
                     ->setContentTitle($_POST['contentTitle'])
                     ->setContent($_POST['content'])
                     ->setDisplayNavbar($checkboxes['displayNavbar'])
                     ->setDisplayFooter($checkboxes['displayFooter'])
                     ->setPublished($checkboxes['published']);
-                CustomPageRepository::uploadImage($page);
+                if (!empty($_FILES['image']['name'])) {
+                    $page->setImage($_FILES['image']);
+                    CustomPageRepository::uploadImage($_FILES['image']);
+                }
                 $page->edit($id);
                 $this->session->setFlash('success', 'La page a bien été modifiée');
                 $this->redirectTo('user', 'manage_pages');
@@ -103,8 +103,8 @@ class CustomPageController extends Controller
             foreach ($errors as $error) {
                 $this->session->setFlash('danger', $error);
             }
-            $this->redirectTo('user', 'manage_pages');
         }
+
         if (isset($_SESSION['auth'])) {
             echo $this->twig->render(
                 '/admin/page/edit.html.twig',
@@ -124,5 +124,11 @@ class CustomPageController extends Controller
         }
         $this->session->setFlash('danger', "La page n'a pas pu être supprimée");
         $this->redirectTo('user', 'manage_pages');
+    }
+
+    public function deletePageImage($id)
+    {
+        CustomPageRepository::deleteImageByPageId($id);
+        $this->redirectTo('user', 'edit_page', ['id' => $id]);
     }
 }

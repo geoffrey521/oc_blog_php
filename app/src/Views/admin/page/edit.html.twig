@@ -13,20 +13,22 @@
                 <label for="title">Titre de la page*</label>
             </div>
             <div class="form-floating">
-                <input type="text" name="catchPhrase" class="form-control" placeholder="phrase d'accroche" value="{{ page.catch_phrase }}" />
+                <input type="text" name="catchPhrase" class="form-control" placeholder="phrase d'accroche" value="{{ page.catchPhrase }}" />
                 <label for="catchPhrase">Phrase d'accroche</label>
             </div>
             <div class="form-floating">
-                <input type="file" name="image" class="form-control" placeholder="image" />
-                <label for="image">Image de fond</label>
-                {% if page.background is not empty %}
-                <img src="/assets/img/uploads/{{ page.background }}" alt="#">
+                {% if page.image is not empty %}
+                <img src="/assets/img/uploads/{{ page.image }}" alt="#">
+                <a href="{{ generate_route('deletePageImage', { id:page.id }) }}" class="btn btn-danger">Supprimer l'image</a>
+                {% else %}
+                    <input type="file" name="image" class="form-control" placeholder="image" />
                 {% endif %}
+                <label for="image">Image de fond</label>
             </div>
             <fieldset>
                 <legend>Contenu</legend>
                 <div class="form-floating mt-2">
-                    <input type="text" name="contentTitle" class="form-control" placeholder="titre secondaire..." value="{{ page.content_title }}"/>
+                    <input type="text" name="contentTitle" class="form-control" placeholder="titre secondaire..." value="{{ page.contentTitle }}"/>
                     <label for="contentTitle">Titre secondaire</label>
                 </div>
                 <div class="form-floating">
@@ -36,8 +38,8 @@
             </fieldset>
             <div class="form-floating Form-checkbox">
                 <input
-                        class="form-check" type="checkbox" name="displayNavbar" value="1"
-                        {% if page.display_navbar is not null %}
+                        class="form-check" type="checkbox" name="displayNavbar" value="{{ page.displayNavbar }}"
+                        {% if page.displayNavbar == true %}
                          checked
                         {% endif %}
                 />
@@ -45,16 +47,16 @@
             </div>
             <div class="form-floating Form-checkbox">
                 <input
-                        class="form-check" type="checkbox" name="displayFooter" value="1"
-                        {% if page.display_footer is not null %}
+                        class="form-check" type="checkbox" name="displayFooter" value="{{ page.displayFooter }}"
+                        {% if page.displayFooter == true %}
                             checked
                         {% endif %}
                 />
                 <label for="displayFooter">Ajouter un lien en bas de page</label>
             </div>
             <div class="form-floating Form-checkbox">
-                <input class="form-check" type="checkbox" name="published" value="1"
-                        {% if page.published is not null %}
+                <input class="form-check" type="checkbox" name="published" value="{{ page.published }}"
+                        {% if page.published == true %}
                             checked
                         {% endif %}
                 />

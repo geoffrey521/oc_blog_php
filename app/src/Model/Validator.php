@@ -51,7 +51,7 @@ class Validator extends MainModel
         }
     }
 
-    public function isConfirmed($field, $errorMsg = '')
+    public function areSamePasswords($field, $errorMsg = '')
     {
         if (empty($this->getField($field)) || $this->getField($field) != $this->getField($field . '_confirm')) {
             $this->getField($field . '_confirm');
@@ -125,7 +125,6 @@ class Validator extends MainModel
         $this->isNotEmpty('title', "Merci d'entrer un titre");
         $this->isNotEmpty('lead', "Merci d'entrer un chapô");
         $this->isNotEmpty('category', "Merci de sélectionner une catégorie");
-        $this->isNotEmpty('slug', "Merci d'entrer une référence");
         $this->isNotEmpty('content', "L'article ne contient aucun contenu");
     }
 }

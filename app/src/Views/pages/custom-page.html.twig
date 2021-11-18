@@ -9,8 +9,10 @@
 {% endblock %}
 
 {% block subHeading %}
-    {{ page.catch_phrase }}
+    {{ page.catchPhrase }}
 {% endblock %}
+
+{% block hero %}/assets/img/uploads/{{ page.image }}{% endblock %}
 
 {% block content %}
     <main class="mb-4">
@@ -20,7 +22,7 @@
                     <!-- Post preview-->
                     <div class="post-preview">
 
-                        <h2 class="post-title">{{ page.content_title }}</h2>
+                        <h2 class="post-title">{{ page.contentTitle }}</h2>
 
                         <p class="post-meta">{{ page.content }}</p>
                     </div>

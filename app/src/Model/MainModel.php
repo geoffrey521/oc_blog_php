@@ -10,9 +10,13 @@ class MainModel
 
     protected $pdo;
 
-    public function __construct()
+    public function __construct($params = [])
     {
         $this->pdo = Database::getDatabase();
+        foreach ($params as $key => $value) {
+            $camelKey = underscoreToCamelCase($key);
+            $this->$camelKey = $value;
+        }
     }
 
     /**
@@ -23,7 +27,7 @@ class MainModel
     public function query($request, array $params)
     {
         if ($params) {
-            $req = $this->pdo->prepare($request);
+            $req = $this->pdo->prepare($request);;
             $req->execute($params);
             return $req;
         }

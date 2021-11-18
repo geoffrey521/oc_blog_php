@@ -32,15 +32,27 @@ class Router
                 'action' => 'login',
                 'path' => 'login'
             ],
+            'forget' => [
+                'controller' => new UserController(),
+                'action' => 'forget',
+                'path' => 'forget'
+            ],
+            'reset' => [
+                'controller' => new UserController(),
+                'action'=> 'reset',
+                'path' => 'reset',
+                'params'=> ''
+            ],
             'register' => [
                 'controller' => new UserController(),
                 'action' => 'register',
                 'path' => 'register'
             ],
-            'confirm' => [
+            'confirmAccount' => [
                 'controller' => new UserController(),
-                'action' => 'confirm',
-                'path' => 'confirm'
+                'action' => 'confirmAccount',
+                'path' => 'confirm_account',
+                'params' => ''
             ],
             'logout' => [
                 'controller' => new UserController(),
@@ -65,7 +77,7 @@ class Router
             'managePosts' => [
                 'controller' => new UserController(),
                 'action' => 'managePosts',
-                'path' => 'manage_post'
+                'path' => 'manage_posts'
             ],
             'create' => [
                 'controller' => new PostController(),
@@ -82,6 +94,12 @@ class Router
                 'controller' => new PostController(),
                 'action' => 'delete',
                 'path' => 'delete',
+                'params' => ''
+            ],
+            'deletePostImage' => [
+                'controller' => new PostController(),
+                'action' => 'deletePostImage',
+                'path' => 'delete_post_image',
                 'params' => ''
             ],
             'singlePost' => [
@@ -117,6 +135,28 @@ class Router
                 'action' => 'deletePage',
                 'path' => 'delete_page',
                 'params' => ''
+            ],
+            'deletePageImage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'deletePageImage',
+                'path' => 'delete_page_image',
+                'params' => ''
+            ],
+            'manageCategories' => [
+                'controller' => new UserController(),
+                'action' => 'manageCategories',
+                'path' => 'manage_categories'
+            ],
+            'createCategory' => [
+                'controller' => new CategoryController(),
+                'action' => 'createCategory',
+                'path' => 'create_category'
+            ],
+            'deleteCategory' => [
+                'controller' => new CategoryController(),
+                'action' => 'deleteCategory',
+                'path' => 'delete_category',
+                'params' => ''
             ]
         ];
     }
@@ -144,6 +184,9 @@ class Router
     {
         $newParams = [];
         for ($i = 0; $i < count($params) - 1; $i++) {
+            if ($i % 2 == 1) {
+                continue;
+            }
             $newParams[$params[$i]] = $params[$i + 1];
         }
         return $newParams;
@@ -157,7 +200,8 @@ class Router
             return $route;
         }
         $httpBuild = str_replace('=', '/', http_build_query($params, null, '/'));
-        return $route . '/' . $httpBuild;
+
+        return (!empty($httpBuild)) ? $route . '/' . $httpBuild : $route;
     }
 
     public function getPath($name, $params = [])

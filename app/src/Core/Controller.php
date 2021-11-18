@@ -41,13 +41,17 @@ class Controller
 
     public function redirectTo($class, $action = "", array $params = [])
     {
+        if ($action == 'home') {
+            $action = '';
+        }
+
         $attributes = "";
         if (!empty($params)) {
             foreach ($params as $key => $value) {
-                $attributes = $attributes . "&" . $key . "=" . $value;
+                $attributes = $attributes . "/" . $key . "/" . $value;
             }
         }
         header("Location: /$action" . $attributes);
-        return;
+        exit;
     }
 }

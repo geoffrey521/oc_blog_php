@@ -42,22 +42,17 @@ class Session
         return $flashes;
     }
 
-    public function write($key, $value)
+    public static function write($key, $value)
     {
         $_SESSION[$key] = $value;
     }
-    public function writetest($key, $value)
+
+    public static function read($key)
     {
-        $this->$key = $value;
+        return $_SESSION[$key] ?? null;
     }
 
-
-    public function read($key)
-    {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
-    }
-
-    public function delete($key)
+    public static function delete($key)
     {
         unset($_SESSION[$key]);
     }

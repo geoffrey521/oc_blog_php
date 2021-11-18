@@ -22,17 +22,19 @@ class PostController extends Controller implements Icontroller
         echo $this->twig->render(
             '/front/posts.html.twig',
             [
-            'posts' => $posts
+                'posts' => $posts
             ]
         );
     }
 
-    public function singlePost($id)
+    public function singlePost($slug)
     {
         $post = null;
-        $category = null;
-        if (isset($id)) {
-            $post = PostRepository::findById($id);
+        if (isset($slug)) {
+            $post = PostRepository::findBySlug($slug);
+            $category = CategoryRepository::findById($post->getCategoryId());
+
+            $post->setCategory($category->getName());
         }
         if (empty($post)) {
             $this->redirectTo('post');
@@ -40,7 +42,7 @@ class PostController extends Controller implements Icontroller
         echo $this->twig->render(
             '/front/single-post.html.twig',
             [
-            'post' => $post
+                'post' => $post
             ]
         );
     }
@@ -51,8 +53,8 @@ class PostController extends Controller implements Icontroller
             echo $this->twig->render(
                 '/front/category.html.twig',
                 [
-                'session' => $this->session,
-                'flashes' => $this->session->getFlashes(),
+                    'session' => $this->session,
+                    'flashes' => $this->session->getFlashes(),
                 ]
             );
             return;
@@ -60,8 +62,8 @@ class PostController extends Controller implements Icontroller
         echo $this->twig->render(
             '/front/category.html.twig',
             [
-            'session' => $this->session,
-            'flashes' => $this->session->getFlashes(),
+                'session' => $this->session,
+                'flashes' => $this->session->getFlashes(),
             ]
         );
     }
@@ -76,13 +78,13 @@ class PostController extends Controller implements Icontroller
                 $post = Post::setPost($user);
                 $post->add();
                 $this->session->setFlash('success', "Article créé avec succès");
-                $this->redirectTo('user', 'manage_post');
+                $this->redirectTo('user', 'manage_posts');
             }
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 $this->session->setFlash('danger', $error);
             }
-            $this->redirectTo('user', 'manage_post');
+            $this->redirectTo('user', 'create');
         }
 
         if (isset($_SESSION['auth'])) {
@@ -90,21 +92,10 @@ class PostController extends Controller implements Icontroller
             echo $this->twig->render(
                 '/admin/post/create.html.twig',
                 [
-                'categories' => $categories
+                    'categories' => $categories
                 ]
             );
         }
-    }
-
-    public function delete($id)
-    {
-        $deleted = PostRepository::deleteById($id);
-        if ($deleted == true) {
-            $this->session->setFlash('success', "L'article à bien été supprimé");
-            $this->redirectTo('user', 'admin');
-        }
-        $this->session->setFlash('danger', "L'article n'a pas pu être supprimé");
-        $this->redirectTo('user', 'admin');
     }
 
     public function edit($id)
@@ -115,26 +106,42 @@ class PostController extends Controller implements Icontroller
             $validator->validatePost();
             if ($validator->isValid()) {
                 $user = $this->session->getUser();
-                Post::setPost($user);
-                $post->edit();
+                $post = Post::setPost($user);
+                $post->edit($id);
                 $this->session->setFlash('success', "Article modifié avec succès");
-                $this->redirectTo('user', 'manage_post');
+                $this->redirectTo('user', 'manage_posts');
             }
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 $this->session->setFlash('danger', $error);
             }
-            $this->redirectTo('user', 'manage_post');
         }
         if (isset($_SESSION['auth'])) {
             $categories = CategoryRepository::findAll();
             echo $this->twig->render(
                 '/admin/post/edit.html.twig',
                 [
-                'post' => $post,
-                'categories' => $categories
+                    'post' => $post,
+                    'categories' => $categories
                 ]
             );
         }
+    }
+
+    public function delete($id)
+    {
+        $deleted = PostRepository::deleteById($id);
+        if ($deleted == true) {
+            $this->session->setFlash('success', "L'article à bien été supprimé");
+            $this->redirectTo('user', 'manage_posts');
+        }
+        $this->session->setFlash('danger', "L'article n'a pas pu être supprimé");
+        $this->redirectTo('user', 'manage_posts');
+    }
+
+    public function deletePostImage($id)
+    {
+        PostRepository::deleteImageByPostId($id);
+        $this->redirectTo('user', 'edit', ['id' => $id]);
     }
 }

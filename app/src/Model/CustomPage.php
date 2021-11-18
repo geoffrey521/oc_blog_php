@@ -8,17 +8,17 @@ class CustomPage extends MainModel
 {
     protected const TABLE_NAME = "page";
 
-    private $id;
-    private $name;
-    private $title;
-    private $catchPhrase;
-    private $image;
-    private $contentTitle;
-    private $content;
-    private $displayNavbar = 0;
-    private $displayFooter = 0;
-    private $slug;
-    private $published = 0;
+    protected $id;
+    protected $name;
+    protected $title;
+    protected $catchPhrase;
+    protected $image;
+    protected $contentTitle;
+    protected $content;
+    protected $displayNavbar = 0;
+    protected $displayFooter = 0;
+    protected $slug;
+    protected $published = 0;
 
     public function getId()
     {
@@ -84,8 +84,10 @@ class CustomPage extends MainModel
     public function setImage($image)
     {
         if (is_array($image) && !empty($image)) {
-            $this->image = $image;
+            $this->image = $image['name'];
+            return $this;
         }
+        $this->image = $image;
         return $this;
     }
 
@@ -184,16 +186,16 @@ class CustomPage extends MainModel
     {
         $this->query(
             'INSERT INTO page(
-                 name, title, catch_phrase, background, content_title, 
+                 name, title, catch_phrase, image, content_title, 
                  content, display_navbar, display_footer, slug, published)
                  VALUES(
-                        :name, :title, :catch_phrase, :background, 
+                        :name, :title, :catch_phrase, :image, 
                         :content_title, :content, :display_navbar, :display_footer, :slug, :published)',
             [
                 'name' => $this->name,
                 'title' => $this->title,
                 'catch_phrase' => $this->catchPhrase,
-                'background' => $this->image['name'],
+                'image' => $this->image,
                 'content_title' => $this->contentTitle,
                 'content' => $this->content,
                 'display_navbar' => $this->displayNavbar,
@@ -210,7 +212,7 @@ class CustomPage extends MainModel
             'UPDATE page SET 
                 title = :title, 
                 catch_phrase = :catch_phrase, 
-                background = :background, 
+                image = :image, 
                 content_title = :content_title, 
                 content = :content, 
                 display_navbar = :display_navbar, 
@@ -220,7 +222,7 @@ class CustomPage extends MainModel
             [
                 'title' => $this->title,
                 'catch_phrase' => $this->catchPhrase,
-                'background' => $this->image['name'],
+                'image' => $this->image,
                 'content_title' => $this->contentTitle,
                 'content' => $this->content,
                 'display_navbar' => $this->displayNavbar,
@@ -237,10 +239,11 @@ class CustomPage extends MainModel
         foreach ($params as $param) {
             if (!array_key_exists($param, $post)) {
                 $checkboxes[$param] = 0;
-            } else {
-                $checkboxes[$param] = 1;
+                continue;
             }
+            $checkboxes[$param] = $post[$param];
         }
         return $checkboxes;
     }
+
 }

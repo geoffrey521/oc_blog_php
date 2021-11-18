@@ -27,6 +27,11 @@ class CustomPageRepository extends BaseRepository implements RepositoryInterface
         return self::delete(CustomPage::getTableName(), ['id' => $id]);
     }
 
+    public static function deleteImageByPageId(int $id)
+    {
+        return self::deleteOneFieldValueById(CustomPage::getTableName(), 'image', ['id' => $id]);
+    }
+
     public static function findDisplayedMenuPages()
     {
         return self::getMany("SELECT * FROM " . CustomPage::getTableName(), CustomPage::class, ['display_navbar' => 1]);
