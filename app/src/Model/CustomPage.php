@@ -245,5 +245,4 @@ class CustomPage extends MainModel
         }
         return $checkboxes;
     }
-
 }

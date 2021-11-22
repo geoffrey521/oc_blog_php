@@ -68,4 +68,12 @@ class Session
         }
         return false;
     }
+
+    /**
+     * restrict page for connected user only
+     */
+    public function isLogged()
+    {
+        return self::read('auth');
+    }
 }

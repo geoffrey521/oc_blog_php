@@ -27,7 +27,8 @@ class MainModel
     public function query($request, array $params)
     {
         if ($params) {
-            $req = $this->pdo->prepare($request);;
+            $req = $this->pdo->prepare($request);
+            ;
             $req->execute($params);
             return $req;
         }

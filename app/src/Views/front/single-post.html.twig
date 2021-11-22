@@ -21,4 +21,40 @@
             </div>
         </div>
     </article>
+    <aside class="mb-4 comments">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <h3 class="thirdTitle">Commentaires</h3>
+                    {% if user.username is not empty %}
+                    <form method="post" action="{{ generate_route('createComment', { id:post.id }) }}">
+                        <div class="form-floating">
+                            <textarea id="comment-content" name="content" class="form-control" placeholder="Écrivez ici votre commentaire"></textarea>
+                            <label for="content">Écrivez ici votre commentaire</label><br />
+                        </div>
+                        <div class="form-floating">
+                            <button class="btn btn-primary text-uppercase" type="submit">Envoyer</button>
+                        </div>
+                    </form>
+                        {% else %}
+                        <p>Vous devez être connecté pour poster un commentaire <a href="{{ generate_route('login') }}">Login</a></p>
+                    {% endif %}
+                    {% if comments %}
+                        {% for comment in comments %}
+                            {% if comment.validate %}
+                        <div class="comments-single mt-5">
+                            <p class="mb-0 comments-single-head">{{ comment.author }} <span class="text-muted">{{ comment.createdAt|date("d/m/Y") }}</span></p>
+                            <p class="mt-1 comments-single-content">{{ comment.content }}</p>
+                        </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% else %}
+                            <div class="comments-single mt-5">
+                                <p>Il n'y a pas encore de commentaire pour cet article.</p>
+                            </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </aside>
 {% endblock %}

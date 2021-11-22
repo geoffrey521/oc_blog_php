@@ -127,4 +127,9 @@ class Validator extends MainModel
         $this->isNotEmpty('category', "Merci de sélectionner une catégorie");
         $this->isNotEmpty('content', "L'article ne contient aucun contenu");
     }
+
+    public function validateComment()
+    {
+        $this->isNotEmpty('content', 'Le commentaire ne doit pas être vide');
+    }
 }

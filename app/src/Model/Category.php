@@ -78,7 +78,8 @@ class Category extends MainModel
 
     public function add()
     {
-        $this->query('INSERT INTO category (name, slug) VALUES (:name, :slug)',
+        $this->query(
+            'INSERT INTO category (name, slug) VALUES (:name, :slug)',
             [
                 'name' => $this->name,
                 'slug' => $this->slug,

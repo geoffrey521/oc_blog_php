@@ -135,7 +135,7 @@ class Post extends MainModel
     /**
      * @return int
      */
-    public function getCategoryId() :int
+    public function getCategoryId(): int
     {
         return $this->categoryId;
     }

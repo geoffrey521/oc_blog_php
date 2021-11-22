@@ -41,10 +41,8 @@ class PostRepository extends BaseRepository implements RepositoryInterface
     {
         $post = self::getOne(Post::getTableName(), Post::class, ['slug' => $postSlug]);
         $author = self::getOne('user', User::class, ['id' => $post->getAutorId()]);
-       // $category = CategoryRepository::findById($post->getCategoryId());
-
         $post->setAuthor($author->getUsername());
-     //       ->setCategory($category->getName());
+
         return $post;
     }
 

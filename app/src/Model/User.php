@@ -4,6 +4,8 @@ namespace App\Model;
 
 class User extends MainModel
 {
+    protected const TABLE_NAME = "user";
+
     protected $id;
     protected $firstname;
     protected $lastname;
@@ -104,11 +106,11 @@ class User extends MainModel
         return $this->password;
     }
 
-   public function setPassword($password)
-   {
-       $this->password = self::hashPassword($password);
-       return $this;
-   }
+    public function setPassword($password)
+    {
+        $this->password = self::hashPassword($password);
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -263,6 +265,11 @@ class User extends MainModel
         return $this;
     }
 
+    public static function getTableName()
+    {
+        return self::TABLE_NAME;
+    }
+
 
 
 
@@ -375,12 +382,11 @@ class User extends MainModel
 
     public function login($username, $password, $remember)
     {
-        if (!empty($username) && !empty($password)) {
+        if (isset($username) && isset($password)) {
             $user = $this->query(
                 'SELECT * FROM user WHERE (username = :username OR email = :username) AND confirmed_at IS NOT NULL',
                 ['username' => $username]
             )->fetch();
-
             if ($user && password_verify($password, $user->password)) {
                 $this->connect($user);
                 if ($remember) {
@@ -388,6 +394,7 @@ class User extends MainModel
                 }
                 return $user;
             }
+            return false;
         }
     }
 
@@ -418,7 +425,10 @@ class User extends MainModel
         if ($user) {
             $bytes = random_bytes(30);
             $reset_token = (bin2hex($bytes));
-            $this->query('UPDATE user SET reset_token = ?, reset_at = NOW() WHERE id = ?', [$reset_token, $user->getId()]);
+            $this->query(
+                'UPDATE user SET reset_token = ?, reset_at = NOW() WHERE id = ?',
+                [$reset_token, $user->getId()]
+            );
             mail(
                 $email,
                 'Blog php: Réinitialisation de votre mot de passe',
@@ -436,7 +446,8 @@ class User extends MainModel
             'SELECT * FROM user WHERE id = ? 
                      AND reset_token IS NOT NULL 
                      AND reset_token = ? 
-                     AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)',
+                     AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE
+                         )',
             [$userId, $token]
         )->fetch();
     }

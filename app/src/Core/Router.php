@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Controller\CategoryController;
+use App\Controller\CommentController;
 use App\Controller\ExceptionController;
 use App\Controller\FrontController;
 use App\Controller\CustomPageController;
@@ -39,9 +40,9 @@ class Router
             ],
             'reset' => [
                 'controller' => new UserController(),
-                'action'=> 'reset',
+                'action' => 'reset',
                 'path' => 'reset',
-                'params'=> ''
+                'params' => ''
             ],
             'register' => [
                 'controller' => new UserController(),
@@ -78,6 +79,35 @@ class Router
                 'controller' => new UserController(),
                 'action' => 'managePosts',
                 'path' => 'manage_posts'
+            ],
+            'createComment' => [
+                'controller' => new CommentController(),
+                'action' => 'createComment',
+                'path' => 'create_comment',
+                'params' => ''
+            ],
+            'validateComment' => [
+                'controller' => new CommentController(),
+                'action' => 'validateComment',
+                'path' => 'validate_comment',
+                'params' => ''
+            ],
+            'deleteComment' => [
+                'controller' => new CommentController(),
+                'action' => 'deleteComment',
+                'path' => 'delete_comment',
+                'params' => ''
+            ],
+            'manageComments' => [
+                'controller' => new UserController(),
+                'action' => 'manageComments',
+                'path' => 'manage_comments',
+                'params' => ''
+            ],
+            'showCommentsList' => [
+                'controller' => new CommentController(),
+                'action' => 'showCommentsList',
+                'path' => 'show_comments_list'
             ],
             'create' => [
                 'controller' => new PostController(),

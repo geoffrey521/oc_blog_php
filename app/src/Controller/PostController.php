@@ -11,7 +11,9 @@ use App\Model\Session;
 use App\Model\User;
 use App\Model\Validator;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 
 class PostController extends Controller implements Icontroller
 {
@@ -30,19 +32,27 @@ class PostController extends Controller implements Icontroller
     public function singlePost($slug)
     {
         $post = null;
+        $comments = null;
+        $user = null;
         if (isset($slug)) {
             $post = PostRepository::findBySlug($slug);
             $category = CategoryRepository::findById($post->getCategoryId());
-
             $post->setCategory($category->getName());
+            $comments = CommentRepository::findAllCommentsByPostId($post->getId());
         }
         if (empty($post)) {
             $this->redirectTo('post');
         }
+        if ($this->session->isLogged()) {
+            $auth = $this->session->getUser();
+            $user = UserRepository::findUserById($auth['id']);
+        }
         echo $this->twig->render(
             '/front/single-post.html.twig',
             [
-                'post' => $post
+                'post' => $post,
+                'comments' => $comments,
+                'user' => $user
             ]
         );
     }
@@ -52,17 +62,13 @@ class PostController extends Controller implements Icontroller
         if (isset($_SESSION['auth'])) {
             echo $this->twig->render(
                 '/front/category.html.twig',
-                [
-                    'session' => $this->session,
-                    'flashes' => $this->session->getFlashes(),
-                ]
+                []
             );
             return;
         }
         echo $this->twig->render(
             '/front/category.html.twig',
             [
-                'session' => $this->session,
                 'flashes' => $this->session->getFlashes(),
             ]
         );

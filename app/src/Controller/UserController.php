@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Core\Controller;
 use App\Core\Icontroller;
+use App\Model\Comment;
 use App\Model\Database;
 use App\Model\Post;
 use App\Model\Session;
 use App\Model\User;
 use App\Model\Validator;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\CustomPageRepository;
 use App\Repository\PostRepository;
 
@@ -45,7 +47,7 @@ class UserController extends Controller implements Icontroller
             if ($validator->isValid()) {
                 $validator->isUniq('email', 'user', "Un compte est déjà associé à cet email.");
             }
-            $validator->isConfirmed('password', "Mot de passe non valide");
+            $validator->areSamePasswords('password', "Mot de passe non valide");
             $validator->isAgree(
                 'terms',
                 "Vous devez accepter les conditions générales d'utilisation pour vous inscrire"
@@ -96,8 +98,12 @@ class UserController extends Controller implements Icontroller
             $validator->isCorrectPassword('password', "Nom d'utilisateur ou mot de passe incorrecte");
             if ($validator->isValid()) {
                 $user = $user->login($_POST['username'], $_POST['password'], isset($_POST['remember']));
+                if($user == false) {
+                    $this->session->setFlash('danger', 'Email ou mot de passe incorrecte');
+                    $this->redirectTo('user', 'login');
+                }
                 $this->session->setFlash('success', 'Connexion réussie');
-                if ($user->is_admin == true) {
+                if ($user->is_admin) {
                     $this->redirectTo('user', 'admin');
                 }
                 $this->redirectTo('front');
@@ -205,7 +211,6 @@ class UserController extends Controller implements Icontroller
                 'posts' => $posts
             ]
         );
-
     }
 
     public function managePosts()
@@ -219,7 +224,7 @@ class UserController extends Controller implements Icontroller
         echo $this->twig->render(
             '/admin/post/manage.html.twig',
             [
-            'posts' => $posts
+                'posts' => $posts
             ]
         );
     }
@@ -235,7 +240,7 @@ class UserController extends Controller implements Icontroller
         echo $this->twig->render(
             '/admin/page/manage.html.twig',
             [
-            'pages' => $pages
+                'pages' => $pages
             ]
         );
     }
@@ -255,4 +260,23 @@ class UserController extends Controller implements Icontroller
             ]
         );
     }
+
+    public function manageComments()
+    {
+        $user = new User();
+        if (!$user->isLogged() || !$user->isAdmin()) {
+            $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
+            $this->redirectTo('front', 'home');
+        }
+        $comments = CommentRepository::findWaitingForValidationComments();
+
+        echo $this->twig->render(
+            '/admin/comment/manage.html.twig',
+            [
+                'comments' => $comments
+            ]
+        );
+    }
+
+
 }
