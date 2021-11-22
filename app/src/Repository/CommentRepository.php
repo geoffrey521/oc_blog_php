@@ -20,7 +20,6 @@ class CommentRepository extends BaseRepository implements RepositoryInterface
             $comment->setAuthor($user->getUsername());
         }
         return $comments;
-
     }
 
     public static function findAll()

@@ -37,7 +37,7 @@ class CategoryController extends Controller implements Icontroller
     public function deleteCategory($id)
     {
         $deleted = CategoryRepository::deleteById($id);
-        if ($deleted == true) {
+        if ($deleted === true) {
             $this->session->setFlash('success', 'La catégorie a bien été supprimée');
             $this->redirectTo('user', 'manage_categories');
         }

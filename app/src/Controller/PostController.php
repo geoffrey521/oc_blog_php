@@ -137,7 +137,7 @@ class PostController extends Controller implements Icontroller
     public function delete($id)
     {
         $deleted = PostRepository::deleteById($id);
-        if ($deleted == true) {
+        if ($deleted === true) {
             $this->session->setFlash('success', "L'article à bien été supprimé");
             $this->redirectTo('user', 'manage_posts');
         }

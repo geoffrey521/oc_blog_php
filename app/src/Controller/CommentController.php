@@ -10,12 +10,6 @@ use App\Repository\PostRepository;
 
 class CommentController extends Controller
 {
-    public function showCommentsList()
-    {
-        $comments = CommentRepository::findAll();
-        dd($comments);
-    }
-
     public function createComment($id)
     {
         $post = PostRepository::findById($id);

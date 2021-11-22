@@ -118,7 +118,7 @@ class CustomPageController extends Controller
     public function deletePage($id)
     {
         $deleted = CustomPageRepository::deleteById($id);
-        if ($deleted == true) {
+        if ($deleted === true) {
             $this->session->setFlash('success', 'La page a bien été supprimée');
             $this->redirectTo('user', 'manage_pages');
         }

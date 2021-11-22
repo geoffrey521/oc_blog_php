@@ -98,7 +98,7 @@ class UserController extends Controller implements Icontroller
             $validator->isCorrectPassword('password', "Nom d'utilisateur ou mot de passe incorrecte");
             if ($validator->isValid()) {
                 $user = $user->login($_POST['username'], $_POST['password'], isset($_POST['remember']));
-                if($user == false) {
+                if ($user === false) {
                     $this->session->setFlash('danger', 'Email ou mot de passe incorrecte');
                     $this->redirectTo('user', 'login');
                 }
@@ -277,6 +277,4 @@ class UserController extends Controller implements Icontroller
             ]
         );
     }
-
-
 }
