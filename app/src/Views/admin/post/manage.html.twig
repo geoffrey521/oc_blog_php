@@ -20,7 +20,7 @@
             {% if posts is not empty %}
                 {% for post in posts %}
                     <tr>
-                        <td><a href="{{ generate_route('singlePost', { id:post.id }) }}">{{ post.title }}</a></td>
+                        <td><a href="{{ generate_route('singlePost', { slug:post.slug }) }}">{{ post.title }}</a></td>
                         <td>
                             <a href="{{ generate_route('edit', { id:post.id }) }}" class="btn btn-primary">Modifier</a>
                             <a href="{{ generate_route('delete', { id:post.id }) }}" class="btn btn-danger"

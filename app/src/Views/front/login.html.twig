@@ -19,7 +19,7 @@
                         <div class="form-floating">
                             <input class="form-control" id="login-password" name="password" type="password" placeholder="Entrez votre mot de passe..."  />
                             <label for="password">Mot de passe </label>
-                            <a href="index.php?c=user&a=forget" class="text-muted">Mot de passe oublié ?</a>
+                            <a href="{{ generate_route('forget') }}" class="text-muted">Mot de passe oublié ?</a>
                         </div>
                         <div class="form-floating Form-checkbox">
                             <input class="form-check" name="remember" type="checkbox" />

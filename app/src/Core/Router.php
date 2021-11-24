@@ -3,10 +3,13 @@
 namespace App\Core;
 
 use App\Controller\CategoryController;
+use App\Controller\CommentController;
 use App\Controller\ExceptionController;
 use App\Controller\FrontController;
+use App\Controller\CustomPageController;
 use App\Controller\PostController;
 use App\Controller\UserController;
+use Exception;
 
 class Router
 {
@@ -30,15 +33,27 @@ class Router
                 'action' => 'login',
                 'path' => 'login'
             ],
+            'forget' => [
+                'controller' => new UserController(),
+                'action' => 'forget',
+                'path' => 'forget'
+            ],
+            'reset' => [
+                'controller' => new UserController(),
+                'action' => 'reset',
+                'path' => 'reset',
+                'params' => ''
+            ],
             'register' => [
                 'controller' => new UserController(),
                 'action' => 'register',
                 'path' => 'register'
             ],
-            'confirm' => [
+            'confirmAccount' => [
                 'controller' => new UserController(),
-                'action' => 'confirm',
-                'path' => 'confirm'
+                'action' => 'confirmAccount',
+                'path' => 'confirm_account',
+                'params' => ''
             ],
             'logout' => [
                 'controller' => new UserController(),
@@ -63,7 +78,36 @@ class Router
             'managePosts' => [
                 'controller' => new UserController(),
                 'action' => 'managePosts',
-                'path' => 'manage_post'
+                'path' => 'manage_posts'
+            ],
+            'createComment' => [
+                'controller' => new CommentController(),
+                'action' => 'createComment',
+                'path' => 'create_comment',
+                'params' => ''
+            ],
+            'validateComment' => [
+                'controller' => new CommentController(),
+                'action' => 'validateComment',
+                'path' => 'validate_comment',
+                'params' => ''
+            ],
+            'deleteComment' => [
+                'controller' => new CommentController(),
+                'action' => 'deleteComment',
+                'path' => 'delete_comment',
+                'params' => ''
+            ],
+            'manageComments' => [
+                'controller' => new UserController(),
+                'action' => 'manageComments',
+                'path' => 'manage_comments',
+                'params' => ''
+            ],
+            'showCommentsList' => [
+                'controller' => new CommentController(),
+                'action' => 'showCommentsList',
+                'path' => 'show_comments_list'
             ],
             'create' => [
                 'controller' => new PostController(),
@@ -82,13 +126,68 @@ class Router
                 'path' => 'delete',
                 'params' => ''
             ],
+            'deletePostImage' => [
+                'controller' => new PostController(),
+                'action' => 'deletePostImage',
+                'path' => 'delete_post_image',
+                'params' => ''
+            ],
             'singlePost' => [
                 'controller' => new PostController(),
                 'action' => 'singlePost',
                 'path' => 'singlePost',
                 'params' => ''
+            ],
+            'showCustomPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'showCustomPage',
+                'path' => 'page',
+                'params' => ''
+            ],
+            'managePages' => [
+                'controller' => new UserController(),
+                'action' => 'managePages',
+                'path' => 'manage_pages'
+            ],
+            'createPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'createPage',
+                'path' => 'create_page'
+            ],
+            'editPage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'editPage',
+                'path' => 'edit_page',
+                'params' => ''
+            ],
+            'deletePage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'deletePage',
+                'path' => 'delete_page',
+                'params' => ''
+            ],
+            'deletePageImage' => [
+                'controller' => new CustomPageController(),
+                'action' => 'deletePageImage',
+                'path' => 'delete_page_image',
+                'params' => ''
+            ],
+            'manageCategories' => [
+                'controller' => new UserController(),
+                'action' => 'manageCategories',
+                'path' => 'manage_categories'
+            ],
+            'createCategory' => [
+                'controller' => new CategoryController(),
+                'action' => 'createCategory',
+                'path' => 'create_category'
+            ],
+            'deleteCategory' => [
+                'controller' => new CategoryController(),
+                'action' => 'deleteCategory',
+                'path' => 'delete_category',
+                'params' => ''
             ]
-
         ];
     }
 
@@ -96,7 +195,6 @@ class Router
     {
         $uri = array_slice(explode('/', $_SERVER['REQUEST_URI']), 1);
         $path = array_shift($uri);
-
         $self = new self();
         $controller = $self->findByPath($path ?? '');
         if (empty($controller)) {
@@ -116,6 +214,9 @@ class Router
     {
         $newParams = [];
         for ($i = 0; $i < count($params) - 1; $i++) {
+            if ($i % 2 == 1) {
+                continue;
+            }
             $newParams[$params[$i]] = $params[$i + 1];
         }
         return $newParams;
@@ -129,21 +230,25 @@ class Router
             return $route;
         }
         $httpBuild = str_replace('=', '/', http_build_query($params, null, '/'));
-        return $route . '/' . $httpBuild;
+
+        return (!empty($httpBuild)) ? $route . '/' . $httpBuild : $route;
     }
 
     public function getPath($name, $params = [])
     {
         if (!isset($this->routes[$name])) {
-            throw new \Exception('route not define');
+            throw new Exception('route not define');
         }
         return $this->routes[$name]['path'];
     }
 
     public function findByPath($path)
     {
-        return array_filter($this->routes, function ($route) use ($path) {
-            return $route['path'] === $path;
-        });
+        return array_filter(
+            $this->routes,
+            function ($route) use ($path) {
+                return $route['path'] === $path;
+            }
+        );
     }
 }

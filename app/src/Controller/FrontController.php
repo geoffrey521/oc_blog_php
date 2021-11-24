@@ -16,9 +16,12 @@ class FrontController extends Controller implements Icontroller
 
     public function home()
     {
-        echo $this->twig->render('/front/home.html.twig', [
+        echo $this->twig->render(
+            '/front/home.html.twig',
+            [
             'posts' => PostRepository::getLastFour(),
-        ]);
+            ]
+        );
     }
 
     public function contact()
@@ -38,18 +41,28 @@ class FrontController extends Controller implements Icontroller
                     'success',
                     'Votre message a bien été envoyé.'
                 );
-                echo $this->twig->render('/front/contact.html.twig', [
+                echo $this->twig->render(
+                    '/front/contact.html.twig',
+                    [
                     'session' => $this->session,
-                ]);
-            } else {
-                echo $this->twig->render('/front/contact.html.twig', [
-                    'session' => $this->session,
-                    'errors' => $errors
-                ]);
+                    ]
+                );
+                return;
             }
+            echo $this->twig->render(
+                '/front/contact.html.twig',
+                [
+                'session' => $this->session,
+                'errors' => $errors
+                ]
+            );
+            return;
         }
-        echo $this->twig->render('/front/contact.html.twig', [
+        echo $this->twig->render(
+            '/front/contact.html.twig',
+            [
             'session' => $this->session
-        ]);
+            ]
+        );
     }
 }

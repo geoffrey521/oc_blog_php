@@ -4,13 +4,13 @@ namespace App\Model;
 
 use App\Repository\CategoryRepository;
 
-class Category
+class Category extends MainModel
 {
-    private const TABLE_NAME = 'category';
-    private $id;
-    private $name;
-    private $slug;
-    private $parent_id;
+    protected const TABLE_NAME = 'category';
+    protected $id;
+    protected $name;
+    protected $slug;
+    protected $parentId;
 
     /**
      * @return mixed
@@ -34,6 +34,7 @@ class Category
     public function setName($name): void
     {
         $this->name = $name;
+        $this->slug = $this->slugify($name);
     }
 
     /**
@@ -45,27 +46,19 @@ class Category
     }
 
     /**
-     * @param mixed $slug
-     */
-    public function setSlug($slug): void
-    {
-        $this->slug = $slug;
-    }
-
-    /**
      * @return mixed
      */
     public function getParentId()
     {
-        return $this->parent_id;
+        return $this->parentId;
     }
 
     /**
      * @param mixed $parentId
      */
-    public function setParentId($parent_id): void
+    public function setParentId($parentId): void
     {
-        $this->parent_id = $parent_id;
+        $this->parentId = $parentId;
     }
 
     public function __toString(): string
@@ -81,5 +74,16 @@ class Category
     public static function getTableName()
     {
         return self::TABLE_NAME;
+    }
+
+    public function add()
+    {
+        $this->query(
+            'INSERT INTO category (name, slug) VALUES (:name, :slug)',
+            [
+                'name' => $this->name,
+                'slug' => $this->slug,
+            ]
+        );
     }
 }

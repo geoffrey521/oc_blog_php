@@ -2,7 +2,6 @@
 
 use App\Controller\ExceptionController;
 use App\Controller\FrontController;
-use App\Controller\HomeController;
 use App\Controller\PostController;
 use App\Controller\UserController;
 

@@ -42,31 +42,17 @@ class Session
         return $flashes;
     }
 
-//    public function setAuth($params = [])
-//    {
-//        if (isset($_SESSION['auth'])) {
-//            foreach ($params as $param) {
-//                $this->auth[$param] = $_SESSION['auth']->$param;
-//            }
-//        }
-//    }
-
-    public function write($key, $value)
+    public static function write($key, $value)
     {
         $_SESSION[$key] = $value;
     }
-    public function writetest($key, $value)
+
+    public static function read($key)
     {
-        $this->$key = $value;
+        return $_SESSION[$key] ?? null;
     }
 
-
-    public function read($key)
-    {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
-    }
-
-    public function delete($key)
+    public static function delete($key)
     {
         unset($_SESSION[$key]);
     }
@@ -74,11 +60,20 @@ class Session
     public function getUser()
     {
         if (isset($_SESSION['auth'])) {
+            $auth = [];
             $auth['id'] = $_SESSION['auth']->id;
             $auth['username'] = $_SESSION['auth']->username;
             $auth['isAdmin'] = $_SESSION['auth']->is_admin;
             return $auth;
         }
         return false;
+    }
+
+    /**
+     * restrict page for connected user only
+     */
+    public function isLogged()
+    {
+        return self::read('auth');
     }
 }

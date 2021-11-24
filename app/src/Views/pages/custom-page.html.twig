@@ -1,0 +1,36 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    {{ page.name }}
+{% endblock %}
+
+{% block mainTitle %}
+    {{ page.title }}
+{% endblock %}
+
+{% block subHeading %}
+    {{ page.catchPhrase }}
+{% endblock %}
+
+{% block hero %}/assets/img/uploads/{{ page.image }}{% endblock %}
+
+{% block content %}
+    <main class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- Post preview-->
+                    <div class="post-preview">
+
+                        <h2 class="post-title">{{ page.contentTitle }}</h2>
+
+                        <p class="post-meta">{{ page.content }}</p>
+                    </div>
+
+                    <!-- Divider-->
+                    <hr class="my-4"/>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

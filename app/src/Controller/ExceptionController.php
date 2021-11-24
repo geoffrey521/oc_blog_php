@@ -8,7 +8,7 @@ class ExceptionController extends Controller
 {
     public function error404()
     {
-        print_r('error 404');
-        die();
+        header('HTTP/1.0 404 Not Found');
+        exit;
     }
 }

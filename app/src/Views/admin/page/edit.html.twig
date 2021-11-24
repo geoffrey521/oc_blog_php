@@ -1,0 +1,68 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Modifier une page
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Modifier la page: {{ page.name }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-floating">
+                <input type="text" name="title" class="form-control" placeholder="titre de la page..." value="{{ page.title }}" />
+                <label for="title">Titre de la page*</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" name="catchPhrase" class="form-control" placeholder="phrase d'accroche" value="{{ page.catchPhrase }}" />
+                <label for="catchPhrase">Phrase d'accroche</label>
+            </div>
+            <div class="form-floating">
+                {% if page.image is not empty %}
+                <img src="/assets/img/uploads/{{ page.image }}" alt="#">
+                <a href="{{ generate_route('deletePageImage', { id:page.id }) }}" class="btn btn-danger">Supprimer l'image</a>
+                {% else %}
+                    <input type="file" name="image" class="form-control" placeholder="image" />
+                {% endif %}
+                <label for="image">Image de fond</label>
+            </div>
+            <fieldset>
+                <legend>Contenu</legend>
+                <div class="form-floating mt-2">
+                    <input type="text" name="contentTitle" class="form-control" placeholder="titre secondaire..." value="{{ page.contentTitle }}"/>
+                    <label for="contentTitle">Titre secondaire</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="content" id="" cols="30" rows="10" required>{{ page.content }}</textarea>
+                    <label for="content">Contenu*</label>
+                </div>
+            </fieldset>
+            <div class="form-floating Form-checkbox">
+                <input
+                        class="form-check" type="checkbox" name="displayNavbar" value="{{ page.displayNavbar }}"
+                        {% if page.displayNavbar == true %}
+                         checked
+                        {% endif %}
+                />
+                <label for="displayNavbar">Ajouter un lien dans le menu principal</label>
+            </div>
+            <div class="form-floating Form-checkbox">
+                <input
+                        class="form-check" type="checkbox" name="displayFooter" value="{{ page.displayFooter }}"
+                        {% if page.displayFooter == true %}
+                            checked
+                        {% endif %}
+                />
+                <label for="displayFooter">Ajouter un lien en bas de page</label>
+            </div>
+            <div class="form-floating Form-checkbox">
+                <input class="form-check" type="checkbox" name="published" value="{{ page.published }}"
+                        {% if page.published == true %}
+                            checked
+                        {% endif %}
+                />
+                <label for="published">Publier la page</label>
+            </div>
+            <button class="btn btn-primary mt-5">Publier</button>
+        </form>
+    </div>
+{% endblock %}

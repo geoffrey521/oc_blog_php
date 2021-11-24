@@ -4,6 +4,9 @@
     GC
 {% endblock %}
 
+{% block mainTitle %}Développeur d'application Web{% endblock %}
+
+
 {% block content %}
     <h1>Bienvenue sur mon site</h1>
     {% if posts is not empty %}
@@ -14,15 +17,17 @@
                         <div class="col-md-10 col-lg-8 col-xl-7">
                             <div class="post-preview">
                                 <div class="category"><a href="{{ generate_route('category', { id:post.categoryId }) }}">{{ post.category }}</a></div>
-                                <a href="index.php?c=post&a=single&id={{ post.id }}">
+                                <a href="{{ generate_route('singlePost', { slug:post.slug }) }}">
                                     <h2 class="post-title">{{ post.title }}</h2>
                                     <h3 class="post-subtitle">{{ post.excerpt }}</h3>
-                                    <img class="img-fluid" src="{{ post.image }}" alt="...">
+                                    {% if post.image is not empty %}
+                                    <img class="img-fluid" src="assets/img/uploads/{{ post.image }}" alt="...">
+                                    {% endif %}
                                 </a>
                                 <p class="post-meta">
                                     Publié le {{ post.last_update|date("d / m / Y") }}
                                 </p>
-                                <p><a href="{{ generate_route('singlePost', { id:post.id }) }}" class="see-more">En voir plus</a></p>
+                                <p><a href="{{ generate_route('singlePost', { slug:post.slug }) }}" class="see-more">En voir plus</a></p>
                             </div>
                         </div>
                     </div>
@@ -31,6 +36,6 @@
             <!-- Divider -->
             <hr class="my-4" />
         {% endfor %}
-        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="index.php?c=post">Tous les articles</a></div>
+        <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="{{ generate_route('showPosts') }}">Tous les articles</a></div>
     {% endif %}
 {% endblock %}
