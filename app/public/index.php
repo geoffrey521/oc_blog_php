@@ -5,7 +5,6 @@ use App\Controller\FrontController;
 
 require '../../vendor/autoload.php';
 
-$frontController = new TmpControllerFactory();
 
 /*$loader = new \Twig\Loader\ArrayLoader([
    'index' => 'hello {{ name }}!',
@@ -58,6 +57,18 @@ if (isset($_GET['c'])) {
                     } catch (Exception $e) {
                         die($e->getMessage());
                     }
+                }
+                break;
+            case 'front':
+                $c = new FrontController();
+                if (isset($action)) {
+                    try {
+                        $c->$action();
+                    } catch (Exception $e) {
+                        die($e->getMessage());
+                    }
+                } else {
+                    $c->index();
                 }
         }
     }

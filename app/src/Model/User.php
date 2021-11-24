@@ -10,8 +10,7 @@ class User
     ];
     private $session;
 
-
-    public function __construct($session = null, $options = [])
+        public function __construct($session = null, $options = [])
     {
         $this->options = array_merge($this->options, $options);
         $this->session = $session;
@@ -61,7 +60,7 @@ class User
             $email,
             'Confirmation de votre compte',
             "Merci de cliquer sur le lien ci-dessous pour valider votre compte\n\n
-            http://localhost/index.php?p=confirm&id=$user_id&token=$token"
+            http://localhost/index.php?c=user&a=confirm&id=$user_id&token=$token"
         );
     }
 
@@ -87,13 +86,10 @@ class User
     /**
      * restrict page for connected user only
      */
-    public function restrict()
+    public function isLogged()
     {
-        if (!$this->session->read('auth')) {
-            $this->session->setFlash('danger', $this->options['restriction_msg']);
+        if ($this->session->read('auth')) {
             return true;
-//            header('Location: index.php?p=login');
-//            exit();
         }
         return false;
     }
@@ -165,7 +161,9 @@ class User
     public function logout()
     {
         setcookie('remember', null, -1);
+        $this->session = Session::getInstance();
         $this->session->delete('auth');
+        $this->session->setFlash('success', 'Vous avez été déconnecté');
     }
 
     public function resetPassword($db, $email)
@@ -182,7 +180,7 @@ class User
                 $email,
                 'Blog php: Réinitialisation de votre mot de passe',
                 "Cliquer sur le lien ci-dessous pour Réinitialiser votre mot de passe\n\n
-                http://localhost/index.php?p=reset&id={$user->id}&token=$reset_token"
+                http://localhost/index.php?c=user&a=reset&id={$user->id}&token=$reset_token"
             );
             return $user;
         }
@@ -195,15 +193,19 @@ class User
             'SELECT * FROM user WHERE id = ? 
                      AND reset_token IS NOT NULL 
                      AND reset_token = ? 
-                     AND reset_at > DATE_SUB(NOW(), 
-                         INTERVAL 30 
-                         )',
+                     AND reset_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)',
             [$user_id, $token]
         )->fetch();
+
     }
 
-    public static function getAuth()
+    public function updatePassword($db, $password, $user_id)
     {
-        return new User(Session::getInstance(), ['restriction_msg' => "Vous devez être connecté pour acceder"]);
+        $db->query('UPDATE user SET password = ? WHERE id = ?', [$password, $user_id]);
+    }
+
+    public function deleteResetToken($db, $user_id)
+    {
+        $db->query('UPDATE user SET reset_token = NULL WHERE id = ?', [$user_id]);
     }
 }

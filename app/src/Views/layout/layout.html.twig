@@ -28,6 +28,14 @@
     <!-- Page Header-->
     {{ include ('layout/partials/header.html.twig') }}
 
+    <!-- flash message -->
+    {% if session.flash is defined %}
+        {% for type, message in session.flash %}
+        <div class="alert alert-{{ type }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- Main Content-->
     <div class="container px-4 px-lg-5">

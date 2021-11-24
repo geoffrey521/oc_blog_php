@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Model\Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -10,6 +11,7 @@ class Controller
 {
 
     protected $twig = null;
+    protected Session $session;
 
     public function __construct()
     {
@@ -18,27 +20,9 @@ class Controller
             'debug' => true,
         ]);
         $this->twig->addExtension(new DebugExtension());
+        $this->session = Session::getInstance();
+        $this->twig->addGlobal('session', $this->session);
     }
-
-//    function renderer($view, array $params = [])
-//    {
-//        if (!empty($params)) {
-//            foreach ($params as $key => $value) {
-//                ${$key} = $value;
-//            }
-//        }
-//        echo $this->twig->render('/' . $view . '.html.twig', [$params]);
-//    }
-
-//    /**
-//     * @throws \Twig\Error\RuntimeError
-//     * @throws \Twig\Error\SyntaxError
-//     * @throws \Twig\Error\LoaderError
-//     */
-//    public function render($twig, array $params = [])
-//    {
-//        return $this->twig->render($twig, $params);
-//    }
 
     public function redirectTo($class, $action = "index", array $params = [])
     {
@@ -51,4 +35,5 @@ class Controller
         header("Location: index.php?c=$class&a=$action" . $attributes);
         exit();
     }
+
 }

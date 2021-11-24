@@ -1,0 +1,40 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Contact
+{% endblock %}
+
+{% block content %}
+    <main class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <p>Pour toute prise de contact, merci de remplir ce formulaire</p>
+                    <div class="my-5">
+                        <form id="contactForm" method="post" data-sb-form-api-token="API_TOKEN">
+                            <div class="form-floating">
+                                <input class="form-control" id="contact-lastname" name="lastname" type="text" placeholder="Entrez votre prénom..." required />
+                                <label for="lastname">Nom</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control" id="contact-email" name="email" type="text" placeholder="Entrez votre email..."  required/>
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="form-floating">
+                                <textarea class="form-control" id="contact-message" name="message" placeholder="Entrez votre message..." style="height: 12rem" required></textarea>
+                                <label for="message">Message</label>
+                            </div>
+                            <div class="form-floating Form-checkbox">
+                                <input class="form-check" id="contact-terms" type="checkbox" name="terms"  />
+                                <label for="terms">En cochant cette case, je reconnais avoir pris connaissance de la charte RGPD et en accepte les termes</label>
+                            </div>
+                            <br />
+                            <!-- Submit Button-->
+                            <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
