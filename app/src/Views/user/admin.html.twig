@@ -6,7 +6,12 @@
 
 {% block content %}
     <div class="container px-4 px-lg-5">
-        <h2>Bonjour {{ username }}</h2>
+        <h2>Bonjour {{ session.user.username }}</h2>
+
+        <div>
+            <a href="{{ generate_route('managePosts') }}" class="btn">Gérer les articles</a>
+            <a href="{{ generate_route('managePosts') }}" class="btn">Gérer les pages</a>
+        </div>
 
         <form method="post">
             <div class="form-floating">

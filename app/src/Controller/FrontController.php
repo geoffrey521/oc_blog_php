@@ -4,26 +4,21 @@ namespace App\Controller;
 
 use App\Core\Controller;
 use App\Core\Icontroller;
+use App\Model\MainModel;
+use App\Model\Post;
 use App\Model\Session;
+use App\Model\User;
 use App\Model\Validator;
+use App\Repository\PostRepository;
 
 class FrontController extends Controller implements Icontroller
 {
-    public function index()
+
+    public function home()
     {
-        if(isset($_SESSION['auth'])) {
-            $username = $_SESSION['auth']->username;
-            echo $this->twig->render('/front/home.html.twig', [
-                'session' => $this->session,
-                'flashes' => $this->session->getFlashes(),
-                'username' => $username
-            ]);
-        } else {
-            echo $this->twig->render('/front/home.html.twig', [
-                'session' => $this->session,
-                'flashes' => $this->session->getFlashes(),
-            ]);
-        }
+        echo $this->twig->render('/front/home.html.twig', [
+            'posts' => PostRepository::getLastFour(),
+        ]);
     }
 
     public function contact()
@@ -43,7 +38,7 @@ class FrontController extends Controller implements Icontroller
                     'success',
                     'Votre message a bien été envoyé.'
                 );
-                 echo $this->twig->render('/front/contact.html.twig', [
+                echo $this->twig->render('/front/contact.html.twig', [
                     'session' => $this->session,
                 ]);
             } else {
@@ -53,14 +48,8 @@ class FrontController extends Controller implements Icontroller
                 ]);
             }
         }
-        $username = '';
-        if (isset($_SESSION['auth']->firstname))
-        {
-            $username = $_SESSION['auth']->firstname;
-        }
         echo $this->twig->render('/front/contact.html.twig', [
-            'session' => $this->session,
-            'username' => $username
+            'session' => $this->session
         ]);
     }
 }

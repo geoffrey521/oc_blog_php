@@ -1,24 +1,28 @@
 <nav class="navbar NavbarCustom navbar-expand-lg navbar-light" id="mainNav">
     <div class="container NavbarCustom-container px-4 px-lg-5">
-        <a class="navbar-brand Navbar-logo" href="index.php?c=front"><img src="assets/img/logo2white.png" alt="logo"></a>
+        <a class="navbar-brand Navbar-logo" href="{{ generate_route('home') }}"><img src="/assets/img/logo2white.png" alt="logo"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
             <i class="fas fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.php?c=front">Home</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">About</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#">Sample Post</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.php?c=front&a=contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('home') }}">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showPosts') }}">Tous les articles</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('contact') }}">Contact</a></li>
             </ul>
             <div class="py-4 py-lg-0 ms-auto">
-            {% if username is not empty %}
-                <a href="index.php?c=user&a=index" class="btn btn-primary">{{ username }}</a>
-                <a href="index.php?c=user&a=logout" class="btn btn-primary">Se déconnecter</a>
+
+            {% if session.user %}
+                {% if session.user.isAdmin  %}
+                <a href="{{ generate_route('admin') }}" class="btn btn-primary">{{ session.user.username }}</a>
+                    {% else %}
+                        <div href="#" class="btn btn-primary" disabled="">{{  session.user.username  }}</div>
+                {% endif %}
+                <a href="{{ generate_route('logout') }}" class="btn btn-primary">Se déconnecter</a>
             {% else %}
-                <a href="index.php?c=user&a=login" class="btn btn-primary">Login</a>
-                <a href="index.php?c=user&a=register" class="btn btn-primary">Créer un compte</a>
+                <a href="{{ generate_route('login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ generate_route('register') }}" class="btn btn-primary">Créer un compte</a>
             {% endif %}
             </div>
         </div>

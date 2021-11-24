@@ -22,3 +22,4 @@ RUN echo "sendmail_path=sendmail -i -t" >> /usr/local/etc/php/conf.d/php-sendmai
 # Without this sendmail will not work.
 # This must match the value for 'hostname' field that you set in ssmtp.conf.
 RUN echo "localhost localhost.localdomain" >> /etc/hosts
+RUN a2enmod rewrite
