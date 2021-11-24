@@ -7,7 +7,7 @@ use PDO;
 
 abstract class BaseRepository
 {
-    protected static function getMany($request, $class, $params = [])
+    protected static function getMany($request, $class, $params = [], $operator = 'AND')
     {
         $db = Database::getDatabase();
         if (!empty($params)) {
@@ -15,7 +15,7 @@ abstract class BaseRepository
             foreach ($params as $key => $value) {
                 $where[] = $key . " = :" . $key;
             }
-            $req = $db->prepare($request . " WHERE " . join(' AND ', $where));
+            $req = $db->prepare($request . " WHERE " . join(" $operator ", $where));
             $req->execute($params);
             return $req->fetchAll(PDO::FETCH_CLASS, $class);
         }
@@ -23,7 +23,7 @@ abstract class BaseRepository
         return $req->fetchAll(PDO::FETCH_CLASS, $class);
     }
 
-    protected static function getOne($tableName, $class, $params = [])
+    protected static function getOne($tableName, $class, $params = [], $operator = 'AND')
     {
         $where = [];
         foreach ($params as $key => $value) {
@@ -31,7 +31,7 @@ abstract class BaseRepository
         }
         $db = Database::getDatabase();
         $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-        $req = $db->prepare(sprintf("SELECT * FROM %s WHERE %s", $tableName, join(' AND ', $where)));
+        $req = $db->prepare(sprintf("SELECT * FROM %s WHERE %s", $tableName, join(" $operator ", $where)));
         $req->execute($params);
         $req->setFetchMode(PDO::FETCH_OBJ);
         $reqObject = $req->fetchObject();

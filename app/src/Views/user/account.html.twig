@@ -1,0 +1,45 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block head %}
+    Gestion du compte
+{% endblock %}
+
+{% block content %}
+    <div class="container px-4 px-lg-5">
+        <h2>Gestion du compte</h2>
+        <form method="post">
+            <fieldset>
+                <legend>Modifier vos informations personnelles</legend>
+                <div class="form-floating">
+                    <input class="form-control" id="register-username" name="username" type="text" placeholder="Entrez votre nom d'utilisateur..." value="{{ user.username }}" />
+                    <label for="username">Pseudo</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" id="register-lastname" name="lastname" type="text" placeholder="Entrez votre prénom..." value="{{ user.lastname }}" />
+                    <label for="lastname">Nom</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" id="register-firstname" name="firstname" type="text" placeholder="Entrez votre nom..." value="{{ user.firstname }}" />
+                    <label for="firstname">Prénom</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Changer de mot de passe</legend>
+                <div class="form-floating">
+                    <input type="password" name="current_password" class="form-control" placeholder="Mot de passe actuel" />
+                    <label for="current_password">Mot de passe actuel</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" name="password" class="form-control" placeholder="Changer de mot de passe" />
+                    <label for="password">Changer de mot de passe</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" name="password_confirm" class="form-control" placeholder="Confirmation du nouveau mot de passe" />
+                    <label for="password_confirm">Confirmation du nouveau mot de passe</label>
+                </div>
+            </fieldset>
+
+            <button class="btn btn-primary">Enregistrer</button>
+        </form>
+    </div>
+{% endblock %}

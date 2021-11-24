@@ -15,7 +15,7 @@ use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 
-class PostController extends Controller implements Icontroller
+class PostController extends Controller
 {
 
     public function showPosts()

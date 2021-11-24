@@ -28,7 +28,6 @@ class MainModel
     {
         if ($params) {
             $req = $this->pdo->prepare($request);
-            ;
             $req->execute($params);
             return $req;
         }

@@ -20,7 +20,7 @@
                 {% if session.user.isAdmin  %}
                 <a href="{{ generate_route('admin') }}" class="btn btn-primary">{{ session.user.username }}</a>
                     {% else %}
-                        <div href="#" class="btn btn-primary" disabled="">{{  session.user.username  }}</div>
+                        <a href="{{ generate_route('manageAccount') }}" class="btn btn-primary">{{ session.user.username }}</a>
                 {% endif %}
                 <a href="{{ generate_route('logout') }}" class="btn btn-primary">Se déconnecter</a>
             {% else %}
