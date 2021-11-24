@@ -8,23 +8,44 @@
     <div class="container px-4 px-lg-5">
         <h2>Bonjour {{ session.user.username }}</h2>
 
-        <div>
-            <a href="{{ generate_route('managePosts') }}" class="btn">Gérer les articles</a>
-            <a href="{{ generate_route('managePages') }}" class="btn">Gérer les pages</a>
-            <a href="{{ generate_route('manageCategories') }}" class="btn">Gérer les catégories</a>
-            <a href="{{ generate_route('manageComments') }}" class="btn">Gérer les commentaires</a>
-        </div>
+        <table class="table">
+            <thead>
+            <th>Gestion administrateur</th>
+            <th>Action</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="{{ generate_route('manageComments') }}">({{ stats.waitingComments }}) Commentaires en attente de modération</a></td>
+                    <td>
+                        <a href="{{ generate_route('manageComments') }}" class="btn btn-primary">Gérer</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="{{ generate_route('managePosts') }}">({{ stats.posts }}) Articles postés</a></td>
+                    <td>
+                        <a href="{{ generate_route('managePosts') }}" class="btn btn-primary">Gérer</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="{{ generate_route('managePages') }}">({{ stats.publishedPages }}) Pages publiées</a></td>
+                    <td>
+                        <a href="{{ generate_route('managePages') }}" class="btn btn-primary">Gérer</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="{{ generate_route('manageCategories') }}">({{ stats.categories }}) Catégories existantes</a></td>
+                    <td>
+                        <a href="{{ generate_route('manageCategories') }}" class="btn btn-primary">Gérer</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="{{ generate_route('manageAccount') }}">Profil personnel</a></td>
+                    <td>
+                        <a href="{{ generate_route('manageAccount') }}" class="btn btn-primary">Modifier</a>
+                    </td>
+                </tr>
 
-        <form method="post">
-            <div class="form-floating">
-                <input type="password" name="password" class="form-control" placeholder="Changer de mot de passe" required />
-                <label for="password">Changer de mot de passe</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" name="password_confirm" class="form-control" placeholder="Confirmation du nouveau mot de passe" required />
-                <label for="password_confirm">Confirmation du nouveau mot de passe</label>
-            </div>
-            <button class="btn btn-primary">Changer de mot de passe</button>
-        </form>
+            </tbody>
+        </table>
     </div>
 {% endblock %}

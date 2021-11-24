@@ -199,39 +199,17 @@ class UserController extends Controller
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
-        $posts = PostRepository::findAll();
+        $stats = [
+            'waitingComments' => count(CommentRepository::findWaitingForValidationComments()),
+            'publishedPages' => count(CustomPageRepository::findPublishedPages()),
+            'posts' => count(PostRepository::findAll()),
+            'categories' => count(CategoryRepository::findAll())
+        ];
         echo $this->twig->render(
             '/user/admin.html.twig',
             [
                 'session' => $this->session,
-                'posts' => $posts
-            ]
-        );
-    }
-
-    /**
-     * Show user dashboard
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function dashboard()
-    {
-        UserRepository::findUserByUsernameOrEmail();
-        if (!array_key_exists('auth', $_SESSION)) {
-            $this->session->setFlash('danger', "Vous devez être connecté pour accéder à cette page");
-            $this->redirectTo('front', 'home');
-        }
-        $user = new User($_SESSION['auth']);
-        if (!$user->isAdmin()) {
-            $this->redirectTo('front', 'manageAccount');
-        }
-        $posts = PostRepository::findAll();
-        echo $this->twig->render(
-            '/user/admin.html.twig',
-            [
-                'session' => $this->session,
-                'posts' => $posts
+                'stats' => $stats
             ]
         );
     }
