@@ -65,6 +65,11 @@ class Router
                 'action' => 'admin',
                 'path' => 'admin'
             ],
+            'manageAccount' => [
+                'controller' => new UserController(),
+                'action' => 'manageAccount',
+                'path' => 'manage_account'
+            ],
             'category' => [
                 'controller' => new CategoryController(),
                 'action' => 'category',

@@ -25,6 +25,7 @@ class Session
     public function setFlash($key, $message)
     {
         $_SESSION['flash'][$key] = $message;
+        error_log(json_encode($_SESSION));
     }
 
     public function hasFlashes()
@@ -59,14 +60,7 @@ class Session
 
     public function getUser()
     {
-        if (isset($_SESSION['auth'])) {
-            $auth = [];
-            $auth['id'] = $_SESSION['auth']->id;
-            $auth['username'] = $_SESSION['auth']->username;
-            $auth['isAdmin'] = $_SESSION['auth']->is_admin;
-            return $auth;
-        }
-        return false;
+        return self::read('auth');
     }
 
     /**
@@ -74,6 +68,13 @@ class Session
      */
     public function isLogged()
     {
-        return self::read('auth');
+        return self::read('auth') !== null;
+    }
+
+    public function updateAuth($user)
+    {
+        $_SESSION['auth']['username'] = $user->getUsername();
+        $_SESSION['auth']['firstname'] = $user->getFirstname();
+        $_SESSION['auth']['lastname'] = $user->getLastname();
     }
 }

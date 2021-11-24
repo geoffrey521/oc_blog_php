@@ -8,7 +8,7 @@ use App\Model\Category;
 use App\Model\Validator;
 use App\Repository\CategoryRepository;
 
-class CategoryController extends Controller implements Icontroller
+class CategoryController extends Controller
 {
 
     public function createCategory()

@@ -11,7 +11,7 @@ use App\Model\User;
 use App\Model\Validator;
 use App\Repository\PostRepository;
 
-class FrontController extends Controller implements Icontroller
+class FrontController extends Controller
 {
 
     public function home()

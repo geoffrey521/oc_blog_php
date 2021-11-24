@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Repository\UserRepository;
+
 class User extends MainModel
 {
     protected const TABLE_NAME = "user";
@@ -23,7 +25,7 @@ class User extends MainModel
     protected $rememberToken;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {
@@ -271,8 +273,6 @@ class User extends MainModel
     }
 
 
-
-
     /**
      * Hash a password who has given and crypt with bcrypt
      *
@@ -304,13 +304,13 @@ class User extends MainModel
                     firstname, lastname, username, email, password, is_active, confirm_token)
                     VALUES(:firstname, :lastname, :username, :email, :password, :is_active, :confirm_token)',
             [
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'username' => $this->username,
-            'email' => $this->email,
-            'password' => $this->password,
-            'is_active' => true,
-            'confirm_token' => $token
+                'firstname' => $this->firstname,
+                'lastname' => $this->lastname,
+                'username' => $this->username,
+                'email' => $this->email,
+                'password' => $this->password,
+                'is_active' => true,
+                'confirm_token' => $token
             ]
         );
         $userId = $this->lastInsertId();
@@ -323,6 +323,7 @@ class User extends MainModel
     }
 
     /**
+     * Confirm and activate a user account
      * @param  $user_id
      * @param  $token
      * @param  $session
@@ -349,16 +350,18 @@ class User extends MainModel
 
     public function isAdmin()
     {
-        $user = Session::read('auth');
-        if ($user->is_admin) {
-            return true;
-        }
-        return false;
+        return $this->isAdmin === 1;
     }
 
-    public function connect($user)
+    public function connect()
     {
-        Session::write('auth', $user);
+        Session::write('auth', [
+            'id' => $this->id,
+            'username' => $this->username,
+            'isAdmin' => $this->isAdmin,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname
+        ]);
     }
 
     public function connectFromCookie()
@@ -380,17 +383,14 @@ class User extends MainModel
         }
     }
 
-    public function login($username, $password, $remember)
+    public static function login($username, $password, $remember)
     {
         if (isset($username) && isset($password)) {
-            $user = $this->query(
-                'SELECT * FROM user WHERE (username = :username OR email = :username) AND confirmed_at IS NOT NULL',
-                ['username' => $username]
-            )->fetch();
+            $user = UserRepository::findUserByUsernameOrEmail($username);
             if ($user && password_verify($password, $user->password)) {
-                $this->connect($user);
+                $user->connect();
                 if ($remember) {
-                    $this->remember($this->id);
+                    $user->remember();
                 }
                 return $user;
             }
@@ -398,14 +398,14 @@ class User extends MainModel
         }
     }
 
-    public function remember($userId)
+    public function remember()
     {
         $bytes = random_bytes(125);
         $remember_token = (bin2hex($bytes));
-        $this->query('UPDATE user SET remember_token = ?', [$remember_token]);
+        $this->query('UPDATE user SET remember_token = ? WHERE id = ?', [$remember_token, $this->id]);
         setcookie(
             'remember',
-            $userId . '==' . $remember_token . sha1($userId . 'memberwookies'),
+            $this->id . '==' . $remember_token . sha1($this->id . 'memberwookies'),
             time() + 60 * 60 * 24 * 7
         );
     }
@@ -462,15 +462,29 @@ class User extends MainModel
         $this->query('UPDATE user SET reset_token = NULL WHERE id = ?', [$userId]);
     }
 
-    /**
-     * restrict page for connected user only
-     */
-    public function restrict()
+    public function edit($id)
     {
-        if (!Session::read('auth')) {
-            $this->session->setFlash('danger', $this->options['restriction_msg']);
-            header('Location: index.php?p=login');
-            exit;
-        }
+        $this->query(
+            'UPDATE user SET
+            username = :username,
+            firstname = :firstname,
+            lastname = :lastname
+            WHERE id = :id',
+            [
+                'username' => $this->username,
+                'firstname' => $this->firstname,
+                'lastname' => $this->lastname,
+                'id' => $id
+            ]
+        );
+    }
+
+    public static function fillWithPost()
+    {
+        $user = new self();
+        $user->setUsername($_POST['username'])
+            ->setFirstname($_POST['firstname'])
+            ->setLastname($_POST['lastname']);
+        return $user;
     }
 }

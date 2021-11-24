@@ -23,3 +23,5 @@ RUN echo "sendmail_path=sendmail -i -t" >> /usr/local/etc/php/conf.d/php-sendmai
 # This must match the value for 'hostname' field that you set in ssmtp.conf.
 RUN echo "localhost localhost.localdomain" >> /etc/hosts
 RUN a2enmod rewrite
+
+# RUN echo "session.save_path=\"/tmp\"" >> /usr/local/etc/php/conf.d/session.ini

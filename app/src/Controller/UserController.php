@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Core\Controller;
-use App\Core\Icontroller;
 use App\Model\Comment;
 use App\Model\Database;
 use App\Model\Post;
@@ -14,8 +13,9 @@ use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CustomPageRepository;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 
-class UserController extends Controller implements Icontroller
+class UserController extends Controller
 {
 
     /**
@@ -83,9 +83,8 @@ class UserController extends Controller implements Icontroller
      */
     public function login()
     {
-        $user = new User();
-        if ($user->isLogged()) {
-            if ($user->getIsAdmin()) {
+        if ($this->session->isLogged()) {
+            if ($this->session->getUser()['isAdmin']) {
                 $this->redirectTo('user', 'admin');
             }
             $this->redirectTo('front', 'home');
@@ -95,18 +94,18 @@ class UserController extends Controller implements Icontroller
             $validator->isNotEmpty('username', "Le Nom d'utilisateur ne peut pas être vide");
             $validator->isNotEmpty('password', "Le Mot de passe ne peut pas être vide");
             $validator->isExist('username', 'user', "Nom d'utilisateur ou mot de passe incorrecte");
-            $validator->isCorrectPassword('password', "Nom d'utilisateur ou mot de passe incorrecte");
+            //$validator->isCorrectPassword('password', "Nom d'utilisateur ou mot de passe incorrecte");
             if ($validator->isValid()) {
-                $user = $user->login($_POST['username'], $_POST['password'], isset($_POST['remember']));
+                $user = User::login($_POST['username'], $_POST['password'], isset($_POST['remember']));
                 if ($user === false) {
                     $this->session->setFlash('danger', 'Email ou mot de passe incorrecte');
                     $this->redirectTo('user', 'login');
                 }
                 $this->session->setFlash('success', 'Connexion réussie');
-                if ($user->is_admin) {
+                if ($this->session->getUser()['isAdmin']) {
                     $this->redirectTo('user', 'admin');
                 }
-                $this->redirectTo('front');
+                $this->redirectTo('front', 'home');
             }
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
@@ -122,7 +121,7 @@ class UserController extends Controller implements Icontroller
         $user = new User();
         $user->logout();
         $this->session->setFlash('success', 'Vous avez été déconnecté');
-        $this->redirectTo('front');
+        $this->redirectTo('front', 'home');
     }
 
     public function confirmAccount($id, $token)
@@ -130,10 +129,10 @@ class UserController extends Controller implements Icontroller
         $user = new User();
         if ($user->confirm($id, $token)) {
             $this->session->setFlash('success', 'Votre compte à bien été validé.');
-            $this->redirectTo('user');
+            $this->redirectTo('front', 'home');
         }
         $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
-        $this->redirectTo('user', 'login');
+        $this->redirectTo('user', 'home');
     }
 
     public function forget()
@@ -150,6 +149,14 @@ class UserController extends Controller implements Icontroller
         echo $this->twig->render('/user/forget-password.html.twig');
     }
 
+    /**
+     * Reset user password if user id and token are verified
+     * @param $id
+     * @param $token
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function reset($id, $token)
     {
         if (isset($id) && isset($token)) {
@@ -176,34 +183,50 @@ class UserController extends Controller implements Icontroller
         $this->redirectTo('user', 'login');
     }
 
+    /**
+     * Show the admin dashboard
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function admin()
     {
-        $posts = PostRepository::findAll();
-
-        if (!array_key_exists('auth', $_SESSION)) {
+        if (!$this->session->isLogged()) {
             $this->session->setFlash('danger', "Vous n'êtes pas connecté");
             $this->redirectTo('front', 'home');
         }
-        $user = new User($_SESSION['auth']);
-        if (!$user->isLogged() || !$user->isAdmin()) {
+        if (!$this->session->getUser()['isAdmin']) {
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
-        if (!empty($_POST)) {
-            if ($_POST['password'] != $_POST['password_confirm']) {
-                $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
-                $this->redirectTo('user', 'admin');
-            }
-            if (empty($_POST['password'])) {
-                $this->session->setFlash('danger', 'Le mot de passe ne peut pas être vide');
-                $this->redirectTo('user', 'admin');
-            }
-            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-            $user->updatePassword($password, $user->getId());
-            $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
-            $this->redirectTo('user', 'admin');
-        }
+        $posts = PostRepository::findAll();
+        echo $this->twig->render(
+            '/user/admin.html.twig',
+            [
+                'session' => $this->session,
+                'posts' => $posts
+            ]
+        );
+    }
 
+    /**
+     * Show user dashboard
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function dashboard()
+    {
+        UserRepository::findUserByUsernameOrEmail();
+        if (!array_key_exists('auth', $_SESSION)) {
+            $this->session->setFlash('danger', "Vous devez être connecté pour accéder à cette page");
+            $this->redirectTo('front', 'home');
+        }
+        $user = new User($_SESSION['auth']);
+        if (!$user->isAdmin()) {
+            $this->redirectTo('front', 'manageAccount');
+        }
+        $posts = PostRepository::findAll();
         echo $this->twig->render(
             '/user/admin.html.twig',
             [
@@ -215,12 +238,12 @@ class UserController extends Controller implements Icontroller
 
     public function managePosts()
     {
-        $posts = PostRepository::findAll();
         $user = new User();
-        if (!$user->isLogged() || !$user->isAdmin()) {
+        if (!$user->isLogged() || !$this->session->getUser()['isAdmin']) {
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
+        $posts = PostRepository::findAll();
         echo $this->twig->render(
             '/admin/post/manage.html.twig',
             [
@@ -229,11 +252,65 @@ class UserController extends Controller implements Icontroller
         );
     }
 
+    public function manageAccount()
+    {
+        $user = UserRepository::findUserById($_SESSION['auth']['id']);
+
+        if (!empty($_POST)) {
+            $validator = new Validator($_POST);
+            $validator->isAlpha(
+                'username',
+                "Pseudo non rempli ou non valide (caractères alphanumérique et traits d'union uniquement)"
+            );
+            if ($validator->isValid() && $_POST['username'] !== $user->getUsername()) {
+                $validator->isUniq('username', 'user', 'Ce pseudo est déjà utilisé');
+            }
+            $validator->isAlpha(
+                'lastname',
+                "Nom non rempli ou non valide (caractères alphanumérique et traits d'union uniquement)"
+            );
+            $validator->isAlpha(
+                'firstname',
+                "Prénom non rempli ou non valide (caractères alphanumérique et traits d'union uniquement)"
+            );
+            if (!empty($_POST['password'])) {
+                if ($_POST['password'] != $_POST['password_confirm']) {
+                    $this->session->setFlash('danger', 'Les mots de passes ne sont pas identiques');
+                    $this->redirectTo('user', 'manage_account');
+                }
+                if ($validator->isValid()) {
+                    if (!password_verify($_POST['current_password'], $user->getPassword())) {
+                        $this->session->setFlash('danger', 'Mot de passe actuel incorrect');
+                        $this->redirectTo('user', 'manage_account');
+                    }
+                    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                    $user->updatePassword($password, $user->getId());
+                    $this->session->setFlash('success', 'Le mot de passe à bien été modifié');
+                }
+            }
+            if ($validator->isValid()) {
+                $userId = $user->getId();
+                $user = User::fillWithPost();
+                $user->edit($userId);
+                $this->session->updateAuth($user);
+                $this->session->setFlash('success', "Profil modifié avec succès");
+                $this->redirectTo('user', 'manage_account');
+            }
+            $errors = $validator->getErrors();
+            foreach ($errors as $error) {
+                $this->session->setFlash('danger', $error);
+            }
+        }
+        echo $this->twig->render('/user/account.html.twig', [
+            'user' => $user
+        ]);
+    }
+
     public function managePages()
     {
         $pages = CustomPageRepository::findAll();
         $user = new User();
-        if (!$user->isLogged() || !$user->isAdmin()) {
+        if (!$user->isLogged() || !$this->session->getUser()['isAdmin']) {
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
@@ -249,7 +326,7 @@ class UserController extends Controller implements Icontroller
     {
         $categories = CategoryRepository::findAll();
         $user = new User();
-        if (!$user->isLogged() || !$user->isAdmin()) {
+        if (!$user->isLogged() || !$this->session->getUser()['isAdmin']) {
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
@@ -264,12 +341,11 @@ class UserController extends Controller implements Icontroller
     public function manageComments()
     {
         $user = new User();
-        if (!$user->isLogged() || !$user->isAdmin()) {
+        if (!$user->isLogged() || !$this->session->getUser()['isAdmin']) {
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
         $comments = CommentRepository::findWaitingForValidationComments();
-
         echo $this->twig->render(
             '/admin/comment/manage.html.twig',
             [
