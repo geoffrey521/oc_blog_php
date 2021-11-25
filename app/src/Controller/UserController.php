@@ -126,12 +126,17 @@ class UserController extends Controller
 
     public function confirmAccount($id, $token)
     {
-        $user = new User();
+        if (!UserRepository::findUserById($id)) {
+            $this->session->setFlash('danger', 'Ce lien de confirmation n\'est pas valide');
+            $this->redirectTo('user', 'home');
+        }
+        $user = new User(UserRepository::findUserById($id));
         if ($user->confirm($id, $token)) {
+            $user->connect();
             $this->session->setFlash('success', 'Votre compte à bien été validé.');
             $this->redirectTo('front', 'home');
         }
-        $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
+        $this->session->setFlash('danger', 'Ce lien de confirmation n\'est pas valide');
         $this->redirectTo('user', 'home');
     }
 
