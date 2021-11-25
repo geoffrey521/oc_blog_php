@@ -126,12 +126,17 @@ class UserController extends Controller
 
     public function confirmAccount($id, $token)
     {
-        $user = new User();
+        if (!UserRepository::findUserById($id)) {
+            $this->session->setFlash('danger', 'Ce lien de confirmation n\'est pas valide');
+            $this->redirectTo('user', 'home');
+        }
+        $user = new User(UserRepository::findUserById($id));
         if ($user->confirm($id, $token)) {
+            $user->connect();
             $this->session->setFlash('success', 'Votre compte à bien été validé.');
             $this->redirectTo('front', 'home');
         }
-        $this->session->setFlash('danger', 'Ce lien de confirmation n\'est plus valide');
+        $this->session->setFlash('danger', 'Ce lien de confirmation n\'est pas valide');
         $this->redirectTo('user', 'home');
     }
 
@@ -199,39 +204,17 @@ class UserController extends Controller
             $this->session->setFlash('danger', "Vous n'avez pas accès à cette page");
             $this->redirectTo('front', 'home');
         }
-        $posts = PostRepository::findAll();
+        $stats = [
+            'waitingComments' => count(CommentRepository::findWaitingForValidationComments()),
+            'publishedPages' => count(CustomPageRepository::findPublishedPages()),
+            'posts' => count(PostRepository::findAll()),
+            'categories' => count(CategoryRepository::findAll())
+        ];
         echo $this->twig->render(
             '/user/admin.html.twig',
             [
                 'session' => $this->session,
-                'posts' => $posts
-            ]
-        );
-    }
-
-    /**
-     * Show user dashboard
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function dashboard()
-    {
-        UserRepository::findUserByUsernameOrEmail();
-        if (!array_key_exists('auth', $_SESSION)) {
-            $this->session->setFlash('danger', "Vous devez être connecté pour accéder à cette page");
-            $this->redirectTo('front', 'home');
-        }
-        $user = new User($_SESSION['auth']);
-        if (!$user->isAdmin()) {
-            $this->redirectTo('front', 'manageAccount');
-        }
-        $posts = PostRepository::findAll();
-        echo $this->twig->render(
-            '/user/admin.html.twig',
-            [
-                'session' => $this->session,
-                'posts' => $posts
+                'stats' => $stats
             ]
         );
     }

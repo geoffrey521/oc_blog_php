@@ -41,4 +41,9 @@ class CustomPageRepository extends BaseRepository implements RepositoryInterface
     {
         return self::getMany("SELECT * FROM " . CustomPage::getTableName(), CustomPage::class, ['display_footer' => 1]);
     }
+
+    public static function findPublishedPages()
+    {
+        return self::getMany("SELECT * FROM " . CustomPage::getTableName(), CustomPage::class, ['published' => 1]);
+    }
 }
