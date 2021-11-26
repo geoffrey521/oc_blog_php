@@ -1,6 +1,20 @@
-.NavbarCustom
+.navbarCustom
 {
   &-container {
-    max-width: 1800px;
+    max-width: 1900px;
   }
+  @include onlyMobile {
+    background-color: rgba(62, 62, 62 , .4);
+    &-connect {
+      position: absolute;
+      bottom: -103px;
+      width: 100%;
+      left: 0;
+      right: 0;
+      background-color: rgba(62, 62, 62 , .4);
+      text-align: center;
+    }
+  }
+
+
 }

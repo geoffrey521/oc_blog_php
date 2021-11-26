@@ -1,8 +1,25 @@
 .mainTitle {
   font-size: 5rem; }
 
-.NavbarCustom-container {
-  max-width: 1800px; }
+.thirdTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 3.75rem; }
+
+.navbarCustom-container {
+  max-width: 1900px; }
+
+@media (max-width: 992px) {
+  .navbarCustom {
+    background-color: rgba(62, 62, 62, 0.4); }
+    .navbarCustom-connect {
+      position: absolute;
+      bottom: -103px;
+      width: 100%;
+      left: 0;
+      right: 0;
+      background-color: rgba(62, 62, 62, 0.4);
+      text-align: center; } }
 
 .Form-checkbox {
   display: flex;
@@ -12,3 +29,9 @@
     margin-right: 5px; }
   .Form-checkbox label {
     position: relative; }
+
+.comments-single-head {
+  font-size: 1.2rem; }
+
+.comments-single-content {
+  font-size: 1rem; }

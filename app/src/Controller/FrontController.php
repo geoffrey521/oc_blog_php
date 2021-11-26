@@ -41,21 +41,10 @@ class FrontController extends Controller
                     'success',
                     'Votre message a bien été envoyé.'
                 );
-                echo $this->twig->render(
-                    '/front/contact.html.twig',
-                    [
-                    'session' => $this->session,
-                    ]
-                );
+                echo $this->twig->render('/front/contact.html.twig');
                 return;
             }
-            echo $this->twig->render(
-                '/front/contact.html.twig',
-                [
-                'session' => $this->session,
-                'errors' => $errors
-                ]
-            );
+            echo $this->twig->render('/front/contact.html.twig');
             return;
         }
         echo $this->twig->render(
@@ -65,4 +54,5 @@ class FrontController extends Controller
             ]
         );
     }
+
 }

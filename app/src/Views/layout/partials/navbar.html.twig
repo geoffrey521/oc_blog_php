@@ -1,5 +1,5 @@
-<nav class="navbar NavbarCustom navbar-expand-lg navbar-light" id="mainNav">
-    <div class="container NavbarCustom-container px-4 px-lg-5">
+<nav class="navbar navbarCustom navbar-expand-lg navbar-dark" id="mainNav">
+    <div class="container navbarCustom-container px-4 px-lg-5">
         <a class="navbar-brand Navbar-logo" href="{{ generate_route('home') }}"><img src="/assets/img/logo2white.png" alt="logo"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -7,15 +7,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('home') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showPosts') }}">Tous les articles</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('contact') }}">Contact</a></li>
+                <li class="nav-item navbarCustom-link"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('home') }}">Accueil</a></li>
+                <li class="nav-item navbarCustom-link"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showPosts') }}">Tous les articles</a></li>
+                <li class="nav-item navbarCustom-link"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('contact') }}">Contact</a></li>
+                <li class="nav-item navbarCustom-link"><a class="nav-link px-lg-3 py-3 py-lg-4" href="calvino-geoffrey-cv.pdf" target="_blank">Télécharger mon cv</a></li>
                 {% for page in menuPages %}
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showCustomPage', { slug:page.slug }) }}">{{ page.name }}</a></li>
+                <li class="nav-item navbarCustom-link"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ generate_route('showCustomPage', { slug:page.slug }) }}">{{ page.name }}</a></li>
                 {% endfor %}
             </ul>
-            <div class="py-4 py-lg-0 ms-auto">
-
+            <div class="py-4 py-lg-0 ms-auto navbarCustom-connect">
             {% if session.user %}
                 {% if session.user.isAdmin  %}
                 <a href="{{ generate_route('admin') }}" class="btn btn-primary">{{ session.user.username }}</a>
