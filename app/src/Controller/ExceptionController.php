@@ -8,7 +8,6 @@ class ExceptionController extends Controller
 {
     public function error404()
     {
-        header('HTTP/1.0 404 Not Found');
-        exit;
+        echo $this->twig->render('/pages/page-404.html.twig');
     }
 }

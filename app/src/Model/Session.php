@@ -71,7 +71,10 @@ class Session
         return self::read('auth') !== null;
     }
 
-    public function updateAuth($user)
+    /**
+     * @param object $user
+     */
+    public function updateAuth(object $user)
     {
         $_SESSION['auth']['username'] = $user->getUsername();
         $_SESSION['auth']['firstname'] = $user->getFirstname();

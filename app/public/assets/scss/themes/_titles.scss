@@ -1,5 +1,7 @@
 .mainTitle {
-  font-size: 5rem;
+  @include desktop {
+    font-size: 4rem;
+  }
 }
 
 .thirdTitle {

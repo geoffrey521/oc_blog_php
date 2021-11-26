@@ -94,7 +94,6 @@ class UserController extends Controller
             $validator->isNotEmpty('username', "Le Nom d'utilisateur ne peut pas être vide");
             $validator->isNotEmpty('password', "Le Mot de passe ne peut pas être vide");
             $validator->isExist('username', 'user', "Nom d'utilisateur ou mot de passe incorrecte");
-            //$validator->isCorrectPassword('password', "Nom d'utilisateur ou mot de passe incorrecte");
             if ($validator->isValid()) {
                 $user = User::login($_POST['username'], $_POST['password'], isset($_POST['remember']));
                 if ($user === false) {
