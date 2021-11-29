@@ -1,1 +1,9 @@
-//todo
+.masthead
+{
+  .site-heading {
+    margin-top: 5rem;
+    @include tablet {
+      margin-top: 4rem;
+    }
+  }
+}
