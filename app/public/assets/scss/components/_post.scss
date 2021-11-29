@@ -1,0 +1,7 @@
+.post {
+  &-preview {
+    &>a:hover {
+      color: inherit;
+    }
+  }
+}
