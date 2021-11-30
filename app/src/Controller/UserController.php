@@ -115,6 +115,9 @@ class UserController extends Controller
         echo $this->twig->render('/front/login.html.twig');
     }
 
+    /**
+     * user logout
+     */
     public function logout()
     {
         $user = new User();
@@ -123,6 +126,11 @@ class UserController extends Controller
         $this->redirectTo('front', 'home');
     }
 
+    /**
+     * User confirm account, activating
+     * @param $id
+     * @param $token
+     */
     public function confirmAccount($id, $token)
     {
         if (!UserRepository::findUserById($id)) {
@@ -139,6 +147,12 @@ class UserController extends Controller
         $this->redirectTo('user', 'home');
     }
 
+    /**
+     * If user forget password
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function forget()
     {
         if (!empty($_POST) && !empty($_POST['email'])) {
@@ -218,6 +232,12 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * Show admin page for managing blog posts
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function managePosts()
     {
         $user = new User();
@@ -234,6 +254,12 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * Show user page for update account
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function manageAccount()
     {
         $user = UserRepository::findUserById($_SESSION['auth']['id']);
@@ -288,6 +314,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Show admin page for managing custom pages
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function managePages()
     {
         $pages = CustomPageRepository::findAll();
@@ -304,6 +336,12 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * Show admin page for managing Categories
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function manageCategories()
     {
         $categories = CategoryRepository::findAll();
@@ -320,6 +358,12 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * Show admin page for managing comments
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function manageComments()
     {
         $user = new User();

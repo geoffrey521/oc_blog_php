@@ -182,6 +182,9 @@ class CustomPage extends MainModel
         return self::TABLE_NAME;
     }
 
+    /**
+     * Insert custompage in database
+     */
     public function add()
     {
         $this->query(
@@ -206,6 +209,10 @@ class CustomPage extends MainModel
         );
     }
 
+    /**
+     * edit custompage in database
+     * @param $id
+     */
     public function edit($id)
     {
         $this->query(
@@ -233,6 +240,12 @@ class CustomPage extends MainModel
         );
     }
 
+    /**
+     * Verify if checkboxes are checked and return an array
+     * @param $params
+     * @param $post
+     * @return array
+     */
     public function verifyCheckedBoxes($params, $post)
     {
         $checkboxes = [];

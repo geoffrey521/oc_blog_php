@@ -39,6 +39,12 @@ class Controller
         );
     }
 
+    /**
+     * Page redirection
+     * @param $class
+     * @param string $action
+     * @param array $params
+     */
     public function redirectTo($class, $action = "", array $params = [])
     {
         if ($action == 'home') {

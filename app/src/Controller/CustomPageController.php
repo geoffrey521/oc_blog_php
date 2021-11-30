@@ -12,6 +12,13 @@ use Symfony\Component\VarDumper\Dumper\DataDumperInterface;
 class CustomPageController extends Controller
 {
 
+    /**
+     * Show one page created by an admin
+     * @param $slug
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function showCustomPage($slug)
     {
         if (isset($slug)) {
@@ -28,6 +35,12 @@ class CustomPageController extends Controller
         }
     }
 
+    /**
+     * Admin create page functionality
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function createPage()
     {
         if (!empty($_POST)) {
@@ -72,6 +85,13 @@ class CustomPageController extends Controller
         }
     }
 
+    /**
+     * Admin edit custom page functionality
+     * @param $id
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function editPage($id)
     {
         $page = CustomPageRepository::findById($id);
@@ -115,6 +135,10 @@ class CustomPageController extends Controller
         }
     }
 
+    /**
+     * Admin delete page functionality
+     * @param $id
+     */
     public function deletePage($id)
     {
         $deleted = CustomPageRepository::deleteById($id);
@@ -126,6 +150,10 @@ class CustomPageController extends Controller
         $this->redirectTo('user', 'manage_pages');
     }
 
+    /**
+     * Delete image from a page
+     * @param $id
+     */
     public function deletePageImage($id)
     {
         CustomPageRepository::deleteImageByPageId($id);

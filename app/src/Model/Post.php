@@ -185,6 +185,9 @@ class Post extends MainModel
         return new DateTime($this->lastUpdate);
     }
 
+    /**
+     * Insert blog post in database
+     */
     public function add()
     {
         $this->query(
@@ -203,6 +206,10 @@ class Post extends MainModel
         );
     }
 
+    /**
+     * edit blog post in database
+     * @param $id
+     */
     public function edit($id)
     {
         $this->query(

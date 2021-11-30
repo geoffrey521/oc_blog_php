@@ -11,6 +11,12 @@ use App\Repository\CategoryRepository;
 class CategoryController extends Controller
 {
 
+    /**
+     * Create a new category
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function createCategory()
     {
         if (!empty($_POST)) {
@@ -34,6 +40,10 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * Delete a category
+     * @param $id
+     */
     public function deleteCategory($id)
     {
         $deleted = CategoryRepository::deleteById($id);

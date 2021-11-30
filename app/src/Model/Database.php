@@ -10,6 +10,10 @@ class Database
 
     protected static $pdo = null;
 
+    /**
+     * Get PDO
+     * @return PDO|null
+     */
     public static function getDatabase()
     {
         if (!self::$pdo) {

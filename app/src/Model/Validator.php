@@ -74,11 +74,6 @@ class Validator extends MainModel
         }
     }
 
-    public function isCorrectPassword($password)
-    {
-        // TODO
-    }
-
     public function isImageValid($field, $errorMsg)
     {
         if ($this->isImageOverSize($field, $errorMsg)) {

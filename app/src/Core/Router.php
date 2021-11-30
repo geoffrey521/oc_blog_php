@@ -196,6 +196,10 @@ class Router
         ];
     }
 
+    /**
+     * Verify if uri is correct and generate associated function
+     * @return array|null
+     */
     public static function match()
     {
         $uri = array_slice(explode('/', $_SERVER['REQUEST_URI']), 1);
@@ -215,6 +219,11 @@ class Router
         return $controller;
     }
 
+    /**
+     * Check params and create an associative array
+     * @param array $params
+     * @return array
+     */
     private static function generateParams($params = [])
     {
         $newParams = [];
@@ -227,6 +236,12 @@ class Router
         return $newParams;
     }
 
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     * @throws Exception
+     */
     public static function generateRoute($name, $params = [])
     {
         $self = new self();

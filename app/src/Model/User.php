@@ -383,6 +383,13 @@ class User extends MainModel
         }
     }
 
+    /**
+     * Get user in database and check if password is correct
+     * @param $username
+     * @param $password
+     * @param $remember
+     * @return User|false|mixed|void
+     */
     public static function login($username, $password, $remember)
     {
         if (isset($username) && isset($password)) {
@@ -398,6 +405,10 @@ class User extends MainModel
         }
     }
 
+    /**
+     * Create a cookie remembering user session
+     * @throws \Exception
+     */
     public function remember()
     {
         $bytes = random_bytes(125);
@@ -479,6 +490,10 @@ class User extends MainModel
         );
     }
 
+    /**
+     * Create a user with only necessary values for post
+     * @return User
+     */
     public static function fillWithPost()
     {
         $user = new self();

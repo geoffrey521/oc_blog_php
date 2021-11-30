@@ -151,6 +151,9 @@ class Comment extends MainModel
         return self::TABLE_NAME;
     }
 
+    /**
+     * insert new comment in database
+     */
     public function add()
     {
         $this->query(
@@ -164,6 +167,10 @@ class Comment extends MainModel
         );
     }
 
+    /**
+     * edit comment status, use for showing it or not
+     * @param $commentId
+     */
     public function editStatus($commentId)
     {
         $this->query(

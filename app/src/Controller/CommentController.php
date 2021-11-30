@@ -10,6 +10,10 @@ use App\Repository\PostRepository;
 
 class CommentController extends Controller
 {
+    /**
+     * Create a new comment
+     * @param $id
+     */
     public function createComment($id)
     {
         $post = PostRepository::findById($id);
@@ -29,6 +33,10 @@ class CommentController extends Controller
         }
     }
 
+    /**
+     * admin validate comment functionality
+     * @param $id
+     */
     public function validateComment($id)
     {
         $comment = CommentRepository::findById($id);
@@ -38,6 +46,10 @@ class CommentController extends Controller
         $this->redirectTo('user', 'manage_comments');
     }
 
+    /**
+     * admin deleted comment functionality
+     * @param $id
+     */
     public function deleteComment($id)
     {
         $comment = CommentRepository::findById($id);
