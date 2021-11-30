@@ -17,10 +17,12 @@ abstract class BaseRepository
             }
             $req = $db->prepare($request . " WHERE " . join(" $operator ", $where));
             $req->execute($params);
-            return $req->fetchAll(PDO::FETCH_CLASS, $class);
+            $reqObjects = $req->fetchAll(PDO::FETCH_OBJ);
+            return self::hydrateMultiple($reqObjects, $class);
         }
         $req = $db->query($request);
-        return $req->fetchAll(PDO::FETCH_CLASS, $class);
+        $reqObjects = $req->fetchAll(PDO::FETCH_OBJ);
+        return self::hydrateMultiple($reqObjects, $class);
     }
 
     protected static function getOne($tableName, $class, $params = [], $operator = 'AND')
@@ -66,5 +68,21 @@ abstract class BaseRepository
             $image['tmp_name'],
             __DIR__ . '/../../public/assets/img/uploads/' . basename($image['name'])
         );
+    }
+
+    /**
+     * Create an array of class objects with an array objects
+     * @param $objects
+     * @param $class
+     * @return array
+     */
+    private static function hydrateMultiple($objects, $class)
+    {
+        $result = [];
+        foreach ($objects as $object) {
+            $object = new $class($object);
+            $result[] = $object;
+        }
+        return $result;
     }
 }
