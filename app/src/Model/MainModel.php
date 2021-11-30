@@ -43,6 +43,7 @@ class MainModel
     }
 
     /**
+     * Create a valid slug with a string
      * @param $string
      * @param string $delimiter
      * @return string

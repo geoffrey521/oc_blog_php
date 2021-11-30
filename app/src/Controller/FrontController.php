@@ -14,6 +14,12 @@ use App\Repository\PostRepository;
 class FrontController extends Controller
 {
 
+    /**
+     * Show Home page
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function home()
     {
         echo $this->twig->render(
@@ -24,6 +30,12 @@ class FrontController extends Controller
         );
     }
 
+    /**
+     * Show contact page
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function contact()
     {
         if (!empty($_POST)) {

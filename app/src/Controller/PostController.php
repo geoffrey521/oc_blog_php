@@ -18,6 +18,9 @@ use App\Repository\UserRepository;
 class PostController extends Controller
 {
 
+    /*
+     * Show page showing all posts
+     */
     public function showPosts()
     {
         $posts = PostRepository::findAll();
@@ -29,6 +32,13 @@ class PostController extends Controller
         );
     }
 
+    /**
+     * Singlepost page
+     * @param $slug
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function singlePost($slug)
     {
         $post = null;
@@ -57,23 +67,12 @@ class PostController extends Controller
         );
     }
 
-    public function category()
-    {
-        if (isset($_SESSION['auth'])) {
-            echo $this->twig->render(
-                '/front/category.html.twig',
-                []
-            );
-            return;
-        }
-        echo $this->twig->render(
-            '/front/category.html.twig',
-            [
-                'flashes' => $this->session->getFlashes(),
-            ]
-        );
-    }
-
+    /**
+     * Create a new blog post
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function create()
     {
         if (!empty($_POST)) {
@@ -104,6 +103,13 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * Edit blog post
+     * @param $id
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function edit($id)
     {
         $post = PostRepository::findById($id);
@@ -134,6 +140,10 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * Delete blog post
+     * @param $id
+     */
     public function delete($id)
     {
         $deleted = PostRepository::deleteById($id);
@@ -145,6 +155,10 @@ class PostController extends Controller
         $this->redirectTo('user', 'manage_posts');
     }
 
+    /**
+     * Delete blog post image
+     * @param $id
+     */
     public function deletePostImage($id)
     {
         PostRepository::deleteImageByPostId($id);

@@ -21,7 +21,7 @@ class CommentRepository extends BaseRepository implements RepositoryInterface
     {
         $comments =  self::getMany('SELECT * FROM ' . Comment::getTableName(), Comment::class, ['status' => 1]);
         foreach ($comments as $comment) {
-            $user = self::getOne(User::getTableName(), User::class, ['id' => $comment->author_id]);
+            $user = self::getOne(User::getTableName(), User::class, ['id' => $comment->getAuthorId()]);
             $comment->setAuthor($user->getUsername());
         }
         return $comments;

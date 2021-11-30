@@ -76,6 +76,9 @@ class Category extends MainModel
         return self::TABLE_NAME;
     }
 
+    /**
+     * Insert category in database
+     */
     public function add()
     {
         $this->query(
