@@ -43,7 +43,7 @@
                         {% for comment in comments %}
                             {% if comment.validate %}
                         <div class="comments-single mt-5">
-                            <p class="mb-0 comments-single-head">{{ comment.author }} <span class="text-muted">{{ comment.createdAt|date("d/m/Y") }}</span></p>
+                            <p class="mb-0 comments-single-head">{{ comment.author }} <span class="text-muted">{{ comment.createdAt|date("d/m/Y H:i:s") }}</span></p>
                             <p class="mt-1 comments-single-content">{{ comment.content }}</p>
                         </div>
                             {% endif %}

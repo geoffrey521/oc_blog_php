@@ -9,7 +9,12 @@ class CommentRepository extends BaseRepository implements RepositoryInterface
 {
     public static function findAllCommentsByPostId($postId)
     {
-        return self::getMany('SELECT * FROM ' . Comment::getTableName(), Comment::class, ['post_id' => $postId]);
+        $comments = self::getMany('SELECT * FROM ' . Comment::getTableName(), Comment::class, ['post_id' => $postId]);
+        foreach ($comments as $comment) {
+            $author = self::getOne(User::getTableName(), User::class, ['id' => $comment->getAuthorId()]);
+                $comment->setAuthor($author->getUsername());
+        }
+        return $comments;
     }
 
     public static function findWaitingForValidationComments()

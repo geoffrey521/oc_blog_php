@@ -14,7 +14,7 @@ class PostRepository extends BaseRepository implements RepositoryInterface
         $posts = self::getMany("SELECT * FROM " . Post::getTableName() .
             " ORDER BY last_update DESC LIMIT 4", Post::class);
         foreach ($posts as $post) {
-            $category = self::getOne(Category::getTableName(), Category::class, ['id' => $post->category_id]);
+            $category = self::getOne(Category::getTableName(), Category::class, ['id' => $post->getCategoryId()]);
             $post->setCategory($category->getName())
                 ->setCategoryId($category->getId());
         }
