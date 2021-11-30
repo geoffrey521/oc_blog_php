@@ -13,7 +13,7 @@ class CommentRepository extends BaseRepository implements RepositoryInterface
         foreach ($comments as $comment) {
             $author = self::getOne(User::getTableName(), User::class, ['id' => $comment->getAuthorId()]);
                 $comment->setAuthor($author->getUsername());
-            }
+        }
         return $comments;
     }
 
