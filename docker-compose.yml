@@ -25,7 +25,7 @@ services:
       - ./:/var/www/html/
     networks:
       - blogphp
-    # user: 1000:1000
+    user: 1000:1000
 
   phpmyadmin:
     depends_on:

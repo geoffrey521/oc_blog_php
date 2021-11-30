@@ -26,7 +26,13 @@
 
 ## Steps
 * First thing, you need to pull project from the repository
-* Use terminal et past this command line: docker-compose up --build
+* Use terminal et past this command lines:  
+npm install  
+npm update  
+composer install  
+composer update  
+composer dumpautoload  
+docker-compose up --build
 * After, you need to go on the phpmyadmin interface via the address: localhost:8081
 * user: root password: root (you can change password in the docker-compose.yml file)
 * Click on import button, click onb "choose a file" and select "import.sql" at the base of repository
