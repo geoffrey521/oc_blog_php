@@ -14,7 +14,7 @@ class MainModel
     {
         $this->pdo = Database::getDatabase();
         foreach ($params as $key => $value) {
-            $camelKey = underscoreToCamelCase($key);
+            $camelKey = $this->underscoreToCamelCase($key);
             $this->$camelKey = $value;
         }
     }
@@ -59,5 +59,17 @@ class MainModel
         $clean = trim($clean, $delimiter);
         setlocale(LC_ALL, $oldLocale);
         return $clean;
+    }
+
+    private function underscoreToCamelCase($string, $capitalizeFirstCharacter = false)
+    {
+
+        $str = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+
+        if (!$capitalizeFirstCharacter) {
+            $str[0] = strtolower($str[0]);
+        }
+
+        return $str;
     }
 }

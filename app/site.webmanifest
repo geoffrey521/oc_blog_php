@@ -1,0 +1,9 @@
+{
+  "name": "blog.geofcalvino.com",
+  "short_name": "geoffreycalvino",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/"
+}
